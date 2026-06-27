@@ -2264,13 +2264,12 @@ const HIST_SEED = [
   { v: null, text:'Привет, человек. Я нейросеть...', time:'вчера', dur:15 },
 ];
 
-/* ===== TTS ENGINE — REAL AUDIO via Google Translate TTS + allorigins CORS proxy =====
- * Free, no API key, works in browser via <audio> tag.
+/* ===== TTS ENGINE — REAL AUDIO via Google Translate TTS (direct, no proxy) =====
+ * Free, no API key, no proxy needed.
  *
- * Direct Google TTS endpoint blocks CORS for audio playback, so we route
- * through the free allorigins.win proxy which adds Access-Control-Allow-Origin.
- *
- *   allorigins URL = https://api.allorigins.win/raw?url=<URL-encoded Google TTS URL>
+ * Google TTS endpoint returns `cross-origin-resource-policy: cross-origin`
+ * which allows the audio to be loaded and played from any origin via the
+ * HTMLAudioElement. No CORS preflight needed for media element playback.
  *
  * Google TTS endpoint: https://translate.google.com/translate_tts
  *   - Supports ~200 chars per request → we chunk longer text
@@ -2287,7 +2286,6 @@ const TTS_ENGINE = {
   isMock: false,
   backends: ['gtts', 'elevenlabs', 'silero', 'minimax'],
   ttsEndpoint: 'https://translate.google.com/translate_tts',
-  proxyEndpoint: 'https://api.allorigins.win/raw?url=',
   chunkSize: 190,  // max chars per request (Google limit ~200)
 
   // Split text into TTS-friendly chunks (prefer sentence boundaries)
@@ -2315,7 +2313,7 @@ const TTS_ENGINE = {
     return chunks;
   },
 
-  // Build a proxied Google TTS URL for a single chunk
+  // Build a direct Google TTS URL for a single chunk
   buildUrl(text, lang) {
     const params = new URLSearchParams({
       ie: 'UTF-8',
@@ -2323,8 +2321,7 @@ const TTS_ENGINE = {
       tl: lang,
       client: 'tw-ob',
     });
-    const googleUrl = `${this.ttsEndpoint}?${params.toString()}`;
-    return this.proxyEndpoint + encodeURIComponent(googleUrl);
+    return `${this.ttsEndpoint}?${params.toString()}`;
   },
 
   async generate(text, voice, opts = {}) {
@@ -2332,7 +2329,7 @@ const TTS_ENGINE = {
     const chunks = this.chunkText(text);
     const speed = opts.speed || 1.0;
 
-    // Build proxied audio URLs for each chunk
+    // Build audio URLs for each chunk
     const urls = chunks.map(c => this.buildUrl(c, lang));
 
     // Preload first chunk to measure real duration via HTMLAudioElement
@@ -2362,7 +2359,7 @@ const TTS_ENGINE = {
                + text.slice(0,20).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
 
     return {
-      audio_urls: urls,           // array of proxied URLs to play in sequence
+      audio_urls: urls,           // array of direct URLs to play in sequence
       duration,
       engine: this.name,
       mock: false,
