@@ -91,8 +91,12 @@
   }
   .logo svg{ width:22px; height:22px; color:#0a0a0f; }
   .brand-name{ font-family:'Unbounded', sans-serif; font-weight:900; font-size:19px; letter-spacing:-0.03em; line-height:1; }
-  .brand-name span{ background:var(--grad-yap); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .brand-tag{ font-size:10px; color:var(--muted); margin-top:4px; letter-spacing:0.06em; text-transform:uppercase; font-weight:600; }
+  .brand-name span{ color: var(--lime); }
+  .brand-tag{
+    font-size:10px; color:var(--muted); margin-top:5px;
+    letter-spacing:0.04em; font-weight:600;
+    display:flex; align-items:center; gap:6px;
+  }
   .balance{
     display:flex; align-items:center; gap:7px;
     background:var(--surface); border:1px solid var(--stroke);
@@ -247,7 +251,7 @@
 
   .gen-btn{
     width:100%; margin-top:14px; padding:16px; border:none; border-radius:var(--r-lg);
-    background:var(--grad-yap); color:#0a0a0f; font-family:inherit; font-weight:800; font-size:16px;
+    background-color:#a3e635; background-image:linear-gradient(135deg,#a3e635 0%,#22d3ee 50%,#8b5cf6 100%); color:#0a0a0f; font-family:inherit; font-weight:800; font-size:16px;
     cursor:pointer; position:relative; overflow:hidden;
     box-shadow: 0 12px 30px rgba(163,230,53,0.35), inset 0 1px 0 rgba(255,255,255,0.4);
     transition: transform .15s; display:flex; align-items:center; justify-content:center; gap:9px;
@@ -321,7 +325,7 @@
 
   .stats{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px; }
   .stat{ background:var(--surface); border:1px solid var(--stroke); border-radius:var(--r-md); padding:11px 8px; text-align:center; }
-  .stat b{ display:block; font-family:'Unbounded', sans-serif; font-weight:800; font-size:18px; background:var(--grad-yap); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1.1; }
+  .stat b{ display:block; font-family:'Unbounded', sans-serif; font-weight:800; font-size:18px; color: var(--lime); line-height:1.1; }
   .stat small{ font-size:10px; color:var(--muted); display:block; margin-top:3px; }
 
   .nav{ position:absolute; bottom:0; left:0; right:0; z-index:10; padding: 10px 16px calc(10px + var(--safe-bottom)); background: rgba(10,10,15,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--stroke); display:flex; justify-content:space-around; }
@@ -349,13 +353,47 @@
   .engine-badge{
     display:inline-flex; align-items:center; gap:5px;
     background: rgba(163,230,53,0.14); border:1px solid rgba(163,230,53,0.35);
-    color: var(--lime); padding:3px 8px; border-radius:6px;
-    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
+    color: var(--lime); padding:2px 7px; border-radius:6px;
+    font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
+    flex-shrink: 0;
   }
   .engine-badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--lime); animation: pulse 2s infinite; }
   @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.4;} }
   .engine-badge.mock{ background: rgba(245,166,35,0.12); border-color: rgba(245,166,35,0.3); color: var(--amber); }
   .engine-badge.mock .dot{ background: var(--amber); }
+
+  /* Made by SKUFI4 credit */
+  .credit{
+    margin: 16px 0 4px;
+    text-align: center;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(34,211,238,0.05));
+    border: 1px solid var(--stroke);
+    border-radius: var(--r-md);
+  }
+  .credit-label{
+    font-size: 9px; color: var(--muted-2);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 4px;
+  }
+  .credit-name{
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 800; font-size: 14px;
+    color: var(--lime);
+    letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .credit-name::before{
+    content: ''; display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--lime);
+    box-shadow: 0 0 8px var(--lime);
+    animation: pulse 2s infinite;
+  }
+  .credit-handle{
+    font-size: 11px; color: var(--muted);
+    margin-top: 4px;
+  }
 </style>
 </head>
 <body>
@@ -379,7 +417,10 @@
       </div>
       <div>
         <div class="brand-name">Neuro<span>Yap</span></div>
-        <div class="brand-tag" id="brandTag">AI Yap Engine · <span class="engine-badge" id="engineBadge"><span class="dot"></span>LIVE</span></div>
+        <div class="brand-tag" id="brandTag">
+          <span>AI Yap Engine</span>
+          <span class="engine-badge" id="engineBadge"><span class="dot"></span>LIVE</span>
+        </div>
       </div>
     </div>
     <div class="balance" id="balanceBtn">
@@ -520,6 +561,12 @@
         </div>
         <button class="prem-btn disabled" id="premBtn">Скоро</button>
       </div>
+
+      <div class="credit">
+        <div class="credit-label">Made by</div>
+        <div class="credit-name">SKUFI4</div>
+        <div class="credit-handle">@skufi4 · developer</div>
+      </div>
     </div>
 
     <!-- VIEW: VOICES -->
@@ -539,6 +586,63 @@
         <button class="sec-link" id="clearHist">Очистить</button>
       </div>
       <div id="histList"></div>
+    </div>
+
+    <!-- VIEW: PROFILE -->
+    <div class="view" data-view="profile">
+      <div class="sec-head">
+        <div class="sec-title">Профиль</div>
+      </div>
+
+      <div style="text-align:center; padding:20px 16px 16px;">
+        <div style="width:84px; height:84px; border-radius:50%; margin:0 auto 12px; background:linear-gradient(135deg,#a3e635,#22d3ee,#8b5cf6); display:grid; place-items:center; box-shadow:0 8px 24px rgba(163,230,53,0.35), inset 0 0 0 3px rgba(255,255,255,0.18);">
+          <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#0a0a0f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
+          </svg>
+        </div>
+        <div style="font-family:'Unbounded', sans-serif; font-weight:800; font-size:20px; letter-spacing:-0.02em;" id="profileName">NeuroYap User</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px;">Бесплатный план</div>
+      </div>
+
+      <div class="stats" style="margin-top:8px;">
+        <div class="stat"><b id="pGen">12</b><small>генераций</small></div>
+        <div class="stat"><b id="pFav">3</b><small>избранных</small></div>
+        <div class="stat"><b id="pMin">1.4</b><small>мин. аудио</small></div>
+      </div>
+
+      <div style="background:var(--surface); border:1px solid var(--stroke); border-radius:var(--r-md); padding:14px; margin-bottom:10px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+          <div>
+            <div style="font-size:13px; font-weight:700;">Yap-коины</div>
+            <div style="font-size:11px; color:var(--muted);">Внутренняя валюта</div>
+          </div>
+          <div style="font-family:'Unbounded', sans-serif; font-weight:800; font-size:20px; color:var(--amber);" id="pCoins">240</div>
+        </div>
+        <button id="topupBtn" style="width:100%; padding:9px; border-radius:9px; background:var(--surface-2); border:1px solid var(--stroke); color:#fff; font-family:inherit; font-size:12px; font-weight:600; cursor:pointer;">
+          + Пополнить (скоро)
+        </button>
+      </div>
+
+      <div class="premium">
+        <div class="prem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3 7 7 .6-5.3 4.6L18 22l-6-4-6 4 1.3-7.8L2 9.6 9 9l3-7Z"/></svg>
+        </div>
+        <div class="prem-text">
+          <b>NeuroYap PRO</b>
+          <small>Безлимит · 124 голоса · без очереди</small>
+        </div>
+        <button class="prem-btn disabled" id="premBtn2">Скоро</button>
+      </div>
+
+      <div class="credit" style="margin-top:18px;">
+        <div class="credit-label">Made by</div>
+        <div class="credit-name">SKUFI4</div>
+        <div class="credit-handle">@skufi4 · developer</div>
+      </div>
+
+      <div style="text-align:center; padding:12px 0 24px; font-size:10px; color:var(--muted-2);">
+        NeuroYap v1.0 · AI Yap Engine
+      </div>
     </div>
 
   </div>
@@ -577,18 +681,15 @@ const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : 
 if (tg) {
   tg.ready();
   tg.expand();
-  // Apply theme params
-  if (tg.themeParams) {
-    const tp = tg.themeParams;
-    if (tp.bg_color) document.documentElement.style.setProperty('--tg-bg', tp.bg_color);
-    if (tp.text_color) document.documentElement.style.setProperty('--tg-text', tp.text_color);
-    if (tp.hint_color) document.documentElement.style.setProperty('--tg-hint', tp.hint_color);
-    if (tp.link_color) document.documentElement.style.setProperty('--tg-link', tp.link_color);
-    if (tp.button_color) document.documentElement.style.setProperty('--tg-button', tp.button_color);
-    if (tp.button_text_color) document.documentElement.style.setProperty('--tg-button-text', tp.button_text_color);
-  }
   // Vertical swipes enabled for content scroll (guarded — older TG clients crash)
   try { if (tg.enableVerticalSwipes) tg.enableVerticalSwipes(); } catch(e) {}
+
+  // NOTE: We intentionally DON'T apply Telegram themeParams.
+  // NeuroYap has its own branded dark neon aesthetic (lime/cyan/violet)
+  // that should look identical in both light and dark Telegram themes.
+  // Applying themeParams breaks the design (transparent text, wrong colors).
+  if (tg.setHeaderColor) try { tg.setHeaderColor('#0a0a0f'); } catch(e) {}
+  if (tg.setBackgroundColor) try { tg.setBackgroundColor('#0a0a0f'); } catch(e) {}
 }
 
 /* Haptic helper */
@@ -2713,6 +2814,21 @@ function updateStats(){
   $('engineName').textContent = TTS_ENGINE.name;
 }
 
+function updateProfile(){
+  const pGen = $('pGen'); if(pGen) pGen.textContent = state.totalGen;
+  const pFav = $('pFav'); if(pFav) pFav.textContent = state.favs.size;
+  const pMin = $('pMin'); if(pMin) pMin.textContent = (state.totalSec/60).toFixed(1);
+  const pCoins = $('pCoins'); if(pCoins) pCoins.textContent = state.coins;
+  // Try to get user name from Telegram
+  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    const u = tg.initDataUnsafe.user;
+    const nameEl = $('profileName');
+    if (nameEl && u.first_name) {
+      nameEl.textContent = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+    }
+  }
+}
+
 /* ===== TABS ===== */
 function switchTab(name){
   haptic('light');
@@ -2724,7 +2840,7 @@ function switchTab(name){
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => switchTab(t.dataset.tab));
 document.querySelectorAll('.nav-item').forEach(n => {
   if(n.dataset.nav) n.onclick = () => {
-    if(n.dataset.nav==='profile'){ toast('Профиль — скоро 🚀'); haptic('warning'); return; }
+    if(n.dataset.nav==='profile'){ switchTab('profile'); updateProfile(); return; }
     switchTab(n.dataset.nav);
   };
 });
@@ -3088,6 +3204,8 @@ $('shareBtn').onclick = () => {
   toast('Поделиться голосовым');
 };
 $('premBtn').onclick = () => buyPro('pro_quarter');
+const premBtn2 = $('premBtn2'); if(premBtn2) premBtn2.onclick = () => buyPro('pro_quarter');
+const topupBtn = $('topupBtn'); if(topupBtn) topupBtn.onclick = () => { haptic('warning'); toast('💳 Пополнение скоро через Telegram Stars'); };
 $('clearHist').onclick = () => {
   haptic('warning');
   HIST_SEED.length = 0;
