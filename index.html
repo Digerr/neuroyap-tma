@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
 <meta name="theme-color" content="#0a0a0f" />
 <title>NeuroYap — AI-озвучка</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -34,11 +35,17 @@
     --r-sm: 12px;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --tg-bg: var(--bg);
+    --tg-text: #fff;
+    --tg-hint: var(--muted);
+    --tg-link: var(--violet);
+    --tg-button: var(--violet);
+    --tg-button-text: #fff;
   }
   html,body{
     height:100%;
-    background:#000;
-    color:var(--text);
+    background:var(--tg-bg);
+    color:var(--tg-text);
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing:antialiased;
     overflow:hidden;
@@ -49,21 +56,18 @@
       radial-gradient(1200px 800px at 50% -10%, rgba(163,230,53,0.10), transparent 60%),
       radial-gradient(900px 600px at 100% 100%, rgba(236,72,153,0.10), transparent 60%),
       radial-gradient(700px 500px at 0% 50%, rgba(139,92,246,0.10), transparent 60%),
-      #000;
+      var(--tg-bg);
   }
-
   .phone{
     position:relative;
     width:min(430px, 100vw);
     height:min(932px, 100vh);
-    background:var(--bg);
+    background:var(--tg-bg);
     overflow:hidden;
     display:flex; flex-direction:column;
     box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
   }
-  @media (max-width: 430px){
-    .phone{ width:100vw; height:100vh; box-shadow:none; }
-  }
+  @media (max-width: 430px){ .phone{ width:100vw; height:100vh; box-shadow:none; } }
 
   .ambient{ position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
   .blob{ position:absolute; border-radius:50%; filter:blur(60px); opacity:.30; animation: float 16s ease-in-out infinite; }
@@ -71,12 +75,8 @@
   .blob.p{ width:300px; height:300px; background:#ec4899; bottom:-60px; right:-80px; animation-delay:-6s; opacity:.22; }
   .blob.c{ width:240px; height:240px; background:#22d3ee; top:40%; right:-100px; opacity:.15; animation-delay:-3s; }
   .blob.v{ width:280px; height:280px; background:#8b5cf6; bottom:30%; left:-120px; opacity:.20; animation-delay:-9s; }
-  @keyframes float{
-    0%,100%{ transform: translate(0,0) scale(1); }
-    50%{ transform: translate(20px,-30px) scale(1.08); }
-  }
+  @keyframes float{ 0%,100%{ transform: translate(0,0) scale(1); } 50%{ transform: translate(20px,-30px) scale(1.08); } }
 
-  /* TOP BAR */
   .topbar{
     position:relative; z-index:5;
     padding: calc(12px + var(--safe-top)) 16px 10px;
@@ -88,17 +88,10 @@
     background:var(--grad-yap);
     display:grid; place-items:center;
     box-shadow: 0 8px 24px rgba(163,230,53,0.35), inset 0 0 0 1px rgba(255,255,255,0.18);
-    position:relative;
   }
   .logo svg{ width:22px; height:22px; color:#0a0a0f; }
-  .brand-name{
-    font-family:'Unbounded', sans-serif;
-    font-weight:900; font-size:19px; letter-spacing:-0.03em;
-    line-height:1;
-  }
-  .brand-name span{
-    background:var(--grad-yap); -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
+  .brand-name{ font-family:'Unbounded', sans-serif; font-weight:900; font-size:19px; letter-spacing:-0.03em; line-height:1; }
+  .brand-name span{ background:var(--grad-yap); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .brand-tag{ font-size:10px; color:var(--muted); margin-top:4px; letter-spacing:0.06em; text-transform:uppercase; font-weight:600; }
   .balance{
     display:flex; align-items:center; gap:7px;
@@ -113,7 +106,6 @@
     display:grid; place-items:center; font-size:11px; font-weight:800; color:#7a4a00;
   }
 
-  /* TABS */
   .tabs{
     position:relative; z-index:5;
     margin: 6px 16px 0;
@@ -146,26 +138,18 @@
 
   .sec-head{ display:flex; align-items:center; justify-content:space-between; margin: 4px 0 12px; }
   .sec-title{ font-size:15px; font-weight:700; letter-spacing:-0.01em; }
-  .sec-link{ font-size:12px; color:var(--violet); font-weight:600; cursor:pointer; }
+  .sec-link{ font-size:12px; color:var(--violet); font-weight:600; cursor:pointer; background:none; border:none; font-family:inherit; }
 
-  /* SEARCH BAR */
   .search{
     display:flex; align-items:center; gap:8px;
     background:var(--surface); border:1px solid var(--stroke);
     padding:9px 12px; border-radius:12px; margin-bottom:10px;
   }
   .search svg{ width:16px; height:16px; color:var(--muted); flex-shrink:0; }
-  .search input{
-    flex:1; background:transparent; border:none; outline:none;
-    color:#fff; font-family:inherit; font-size:14px;
-  }
+  .search input{ flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px; }
   .search input::placeholder{ color:var(--muted-2); }
 
-  /* CATEGORY CHIPS */
-  .chips{
-    display:flex; gap:7px; overflow-x:auto; margin: 0 -16px 12px; padding: 0 16px 4px;
-    scrollbar-width:none;
-  }
+  .chips{ display:flex; gap:7px; overflow-x:auto; margin: 0 -16px 12px; padding: 0 16px 4px; scrollbar-width:none; }
   .chips::-webkit-scrollbar{ display:none; }
   .chip{
     flex:0 0 auto; padding:7px 13px; border-radius:999px;
@@ -175,43 +159,28 @@
   }
   .chip svg{ width:13px; height:13px; }
   .chip.active{ background: var(--grad-yap); color:#0a0a0f; border-color:transparent; font-weight:800; }
+  .chip .count{ font-size:10px; opacity:.7; margin-left:2px; }
 
-  /* VOICE CARDS (horizontal) */
-  .voices-row{
-    display:flex; gap:11px; overflow-x:auto;
-    margin: 0 -16px; padding: 4px 16px 8px;
-    scrollbar-width:none;
-  }
+  .voices-row{ display:flex; gap:11px; overflow-x:auto; margin: 0 -16px; padding: 4px 16px 8px; scrollbar-width:none; }
   .voices-row::-webkit-scrollbar{ display:none; }
   .vcard{
     flex:0 0 auto; width:112px;
     background:var(--surface); border:1px solid var(--stroke);
     border-radius:var(--r-md); padding:11px 10px;
-    cursor:pointer; position:relative; transition:.2s;
-    overflow:hidden;
+    cursor:pointer; position:relative; transition:.2s; overflow:hidden;
   }
-  .vcard::before{
-    content:''; position:absolute; inset:0;
-    background: var(--grad-yap); opacity:0; transition:.25s; border-radius:var(--r-md);
-    z-index:-1;
-  }
-  .vcard.active{
-    border-color:transparent;
-    box-shadow: 0 0 0 2px var(--lime), 0 8px 24px rgba(163,230,53,0.35);
-    transform: translateY(-2px);
-  }
+  .vcard::before{ content:''; position:absolute; inset:0; background: var(--grad-yap); opacity:0; transition:.25s; border-radius:var(--r-md); z-index:-1; }
+  .vcard.active{ border-color:transparent; box-shadow: 0 0 0 2px var(--lime), 0 8px 24px rgba(163,230,53,0.35); transform: translateY(-2px); }
   .vcard.active::before{ opacity:1; }
   .vcard.active .vname, .vcard.active .vmeta{ color:#0a0a0f; }
   .vcard.active .vtag{ background:rgba(10,10,15,0.2); color:#0a0a0f; }
   .vcard.active .cat-ico{ color:rgba(10,10,15,0.7); }
-
   .vavatar{
     width:58px; height:58px; border-radius:50%;
     margin: 0 auto 8px;
     display:grid; place-items:center;
     font-family:'Unbounded', sans-serif; font-weight:800; font-size:18px; color:#fff;
-    position:relative;
-    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15);
+    position:relative; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15);
   }
   .vavatar::after{
     content:''; position:absolute; right:-2px; bottom:-2px;
@@ -227,20 +196,17 @@
   }
   .vcard:hover .vpreview, .vcard.active .vpreview{ opacity:1; }
   .vpreview svg{ width:11px; height:11px; color:#fff; }
-
   .vname{ font-size:12.5px; font-weight:700; text-align:center; line-height:1.2; }
   .vmeta{ font-size:10px; color:var(--muted); text-align:center; margin-top:3px; display:flex; align-items:center; justify-content:center; gap:3px; }
   .cat-ico{ width:11px; height:11px; color:var(--muted); }
   .vtag{
     display:inline-block; margin: 6px auto 0; padding:2px 7px;
     background: rgba(139,92,246,0.18); color:var(--violet);
-    font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
-    border-radius:5px;
+    font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; border-radius:5px;
   }
   .vtag.hot{ background: rgba(236,72,153,0.18); color:var(--pink); }
   .vtag.new{ background: rgba(163,230,53,0.18); color:var(--lime); }
   .vtag.pro{ background: rgba(245,166,35,0.18); color:var(--amber); }
-
   .vcard.locked{ opacity:0.55; }
   .vlock{
     position:absolute; right:6px; top:6px;
@@ -248,7 +214,6 @@
     background: rgba(245,166,35,0.95); display:grid; place-items:center;
   }
   .vlock svg{ width:11px; height:11px; color:#fff; }
-
   .vcard-fav{
     position:absolute; left:6px; top:6px;
     width:22px; height:22px; border-radius:50%;
@@ -258,316 +223,139 @@
   .vcard-fav svg{ width:11px; height:11px; color: rgba(255,255,255,0.5); }
   .vcard-fav.on svg{ color: var(--pink); fill: var(--pink); }
 
-  /* INPUT */
   .input-wrap{
     background:var(--surface); border:1px solid var(--stroke);
-    border-radius:var(--r-lg); padding:14px 14px 12px;
-    transition:.2s;
+    border-radius:var(--r-lg); padding:14px 14px 12px; transition:.2s;
   }
-  .input-wrap:focus-within{
-    border-color: var(--lime);
-    box-shadow: 0 0 0 3px rgba(163,230,53,0.18);
-  }
-  .input-wrap textarea{
-    width:100%; min-height:96px; resize:none;
-    background:transparent; border:none; outline:none;
-    color:#fff; font-family:inherit; font-size:15px; line-height:1.45;
-  }
+  .input-wrap:focus-within{ border-color: var(--lime); box-shadow: 0 0 0 3px rgba(163,230,53,0.18); }
+  .input-wrap textarea{ width:100%; min-height:96px; resize:none; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; line-height:1.45; }
   .input-wrap textarea::placeholder{ color:var(--muted-2); }
-  .input-meta{
-    display:flex; align-items:center; justify-content:space-between;
-    margin-top:8px; padding-top:10px; border-top:1px solid var(--stroke);
-  }
+  .input-meta{ display:flex; align-items:center; justify-content:space-between; margin-top:8px; padding-top:10px; border-top:1px solid var(--stroke); }
   .input-tools{ display:flex; gap:6px; }
-  .tool-btn{
-    width:32px; height:32px; border-radius:9px;
-    background:var(--surface-2); border:1px solid var(--stroke);
-    display:grid; place-items:center; cursor:pointer;
-    color:var(--muted); transition:.2s;
-  }
+  .tool-btn{ width:32px; height:32px; border-radius:9px; background:var(--surface-2); border:1px solid var(--stroke); display:grid; place-items:center; cursor:pointer; color:var(--muted); transition:.2s; }
   .tool-btn:hover{ color:#fff; background:rgba(255,255,255,0.1); }
   .tool-btn svg{ width:15px; height:15px; }
   .char-count{ font-size:11px; color:var(--muted); font-weight:600; }
   .char-count.warn{ color: var(--pink); }
 
   .opts{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
-  .opt{
-    background:var(--surface); border:1px solid var(--stroke);
-    border-radius:var(--r-md); padding:10px 12px;
-    display:flex; align-items:center; justify-content:space-between;
-    cursor:pointer;
-  }
+  .opt{ background:var(--surface); border:1px solid var(--stroke); border-radius:var(--r-md); padding:10px 12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
   .opt-l{ display:flex; flex-direction:column; gap:2px; }
   .opt-l small{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; font-weight:600; }
   .opt-l b{ font-size:13px; font-weight:700; }
-  .opt .pill{
-    font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px;
-    background:rgba(34,211,238,0.16); color:var(--cyan); cursor:pointer;
-  }
+  .opt .pill{ font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(34,211,238,0.16); color:var(--cyan); cursor:pointer; }
 
-  /* GENERATE BUTTON */
   .gen-btn{
-    width:100%; margin-top:14px;
-    padding:16px; border:none; border-radius:var(--r-lg);
-    background:var(--grad-yap);
-    color:#0a0a0f; font-family:inherit; font-weight:800; font-size:16px;
+    width:100%; margin-top:14px; padding:16px; border:none; border-radius:var(--r-lg);
+    background:var(--grad-yap); color:#0a0a0f; font-family:inherit; font-weight:800; font-size:16px;
     cursor:pointer; position:relative; overflow:hidden;
     box-shadow: 0 12px 30px rgba(163,230,53,0.35), inset 0 1px 0 rgba(255,255,255,0.4);
-    transition: transform .15s;
-    display:flex; align-items:center; justify-content:center; gap:9px;
+    transition: transform .15s; display:flex; align-items:center; justify-content:center; gap:9px;
   }
   .gen-btn:active{ transform: scale(0.98); }
   .gen-btn svg{ width:18px; height:18px; }
-  .gen-btn::after{
-    content:''; position:absolute; inset:0;
-    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
-    transform: translateX(-100%);
-    animation: shimmer 2.5s infinite;
-  }
+  .gen-btn::after{ content:''; position:absolute; inset:0; background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%); transform: translateX(-100%); animation: shimmer 2.5s infinite; }
   @keyframes shimmer{ 100%{ transform: translateX(100%);} }
   .gen-btn.loading{ pointer-events:none; }
   .gen-btn.loading .lbl{ opacity:0; }
-  .gen-btn.loading::before{
-    content:''; position:absolute; width:24px; height:24px;
-    border:3px solid rgba(10,10,15,0.3); border-top-color:#0a0a0f;
-    border-radius:50%; animation: spin 0.8s linear infinite;
-  }
+  .gen-btn.loading::before{ content:''; position:absolute; width:24px; height:24px; border:3px solid rgba(10,10,15,0.3); border-top-color:#0a0a0f; border-radius:50%; animation: spin 0.8s linear infinite; }
   @keyframes spin{ 100%{ transform: rotate(360deg); } }
+  .gen-cost{ text-align:center; font-size:11px; color:var(--muted); margin-top:8px; display:flex; align-items:center; justify-content:center; gap:5px; }
 
-  .gen-cost{
-    text-align:center; font-size:11px; color:var(--muted); margin-top:8px;
-    display:flex; align-items:center; justify-content:center; gap:5px;
-  }
-
-  /* RESULT PLAYER */
-  .result{
-    margin-top:18px;
-    background: linear-gradient(180deg, rgba(163,230,53,0.08), rgba(34,211,238,0.05));
-    border:1px solid var(--stroke-2);
-    border-radius:var(--r-lg); padding:14px;
-    display:none;
-  }
+  .result{ margin-top:18px; background: linear-gradient(180deg, rgba(163,230,53,0.08), rgba(34,211,238,0.05)); border:1px solid var(--stroke-2); border-radius:var(--r-lg); padding:14px; display:none; }
   .result.show{ display:block; animation: pop .4s cubic-bezier(.34,1.56,.64,1); }
   @keyframes pop{ from{ opacity:0; transform:translateY(10px) scale(0.97);} to{ opacity:1; transform:none; } }
-
   .result-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-  .result-av{
-    width:40px; height:40px; border-radius:50%;
-    display:grid; place-items:center; color:#fff; font-weight:800; font-size:14px;
-    font-family:'Unbounded', sans-serif; flex-shrink:0;
-  }
+  .result-av{ width:40px; height:40px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:800; font-size:14px; font-family:'Unbounded', sans-serif; flex-shrink:0; }
   .result-info{ flex:1; min-width:0; }
   .result-info b{ font-size:13px; font-weight:700; display:block; }
-  .result-info small{
-    font-size:11px; color:var(--muted); display:block;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-  .result-dur{
-    background:rgba(34,211,238,0.16); padding:3px 8px; border-radius:6px;
-    font-size:10px; font-weight:700; color:var(--cyan); flex-shrink:0;
-  }
+  .result-info small{ font-size:11px; color:var(--muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .result-dur{ background:rgba(34,211,238,0.16); padding:3px 8px; border-radius:6px; font-size:10px; font-weight:700; color:var(--cyan); flex-shrink:0; }
 
-  /* REAL WAVEFORM (interactive) */
-  .wave-wrap{
-    background: rgba(0,0,0,0.3); border-radius:10px; padding: 10px 6px;
-    margin: 8px 0; position:relative; cursor:pointer;
-  }
-  .wave{
-    display:flex; align-items:center; gap:2px; height:42px;
-  }
-  .wave .bar{
-    flex:1; background: rgba(255,255,255,0.18); border-radius:1.5px;
-    min-height:4px; transition: background .15s;
-  }
+  .wave-wrap{ background: rgba(0,0,0,0.3); border-radius:10px; padding: 10px 6px; margin: 8px 0; position:relative; cursor:pointer; }
+  .wave{ display:flex; align-items:center; gap:2px; height:42px; }
+  .wave .bar{ flex:1; background: rgba(255,255,255,0.18); border-radius:1.5px; min-height:4px; transition: background .15s; }
   .wave .bar.played{ background: var(--grad-yap); }
   .wave.playing .bar{ animation: wv 1s ease-in-out infinite; }
-  @keyframes wv{
-    0%,100%{ transform: scaleY(0.6); }
-    50%{ transform: scaleY(1); }
-  }
-  .wave-tooltip{
-    position:absolute; top:-26px; background:#000; color:#fff;
-    padding:3px 7px; border-radius:5px; font-size:10px; font-weight:700;
-    transform: translateX(-50%); pointer-events:none; opacity:0; transition:.1s;
-    border:1px solid var(--stroke-2);
-  }
+  @keyframes wv{ 0%,100%{ transform: scaleY(0.6); } 50%{ transform: scaleY(1); } }
+  .wave-tooltip{ position:absolute; top:-26px; background:#000; color:#fff; padding:3px 7px; border-radius:5px; font-size:10px; font-weight:700; transform: translateX(-50%); pointer-events:none; opacity:0; transition:.1s; border:1px solid var(--stroke-2); }
   .wave-wrap:hover .wave-tooltip{ opacity:1; }
-
   .player-row{ display:flex; align-items:center; gap:10px; margin-top: 4px; }
-  .play-btn{
-    width:44px; height:44px; border-radius:50%; border:none;
-    background:var(--grad-yap); color:#0a0a0f; cursor:pointer;
-    display:grid; place-items:center; flex-shrink:0;
-    box-shadow: 0 6px 16px rgba(163,230,53,0.35);
-  }
+  .play-btn{ width:44px; height:44px; border-radius:50%; border:none; background:var(--grad-yap); color:#0a0a0f; cursor:pointer; display:grid; place-items:center; flex-shrink:0; box-shadow: 0 6px 16px rgba(163,230,53,0.35); }
   .play-btn svg{ width:18px; height:18px; margin-left:1px; }
-  .progress{
-    flex:1; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden;
-  }
+  .progress{ flex:1; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden; }
   .progress-fill{ height:100%; background:var(--grad-yap); width:0; transition: width .15s linear; }
   .time{ font-size:10px; color:var(--muted); font-variant-numeric:tabular-nums; font-weight:600; min-width:60px; text-align:right; }
-
-  .player-controls{
-    display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px;
-    padding-top:10px; border-top:1px solid var(--stroke);
-  }
-  .pc-btn{
-    background: var(--surface-2); border:1px solid var(--stroke);
-    color:#fff; padding:6px 10px; border-radius:8px;
-    font-family:inherit; font-size:11px; font-weight:700;
-    cursor:pointer; display:flex; align-items:center; gap:4px; transition:.2s;
-  }
+  .player-controls{ display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid var(--stroke); }
+  .pc-btn{ background: var(--surface-2); border:1px solid var(--stroke); color:#fff; padding:6px 10px; border-radius:8px; font-family:inherit; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:4px; transition:.2s; }
   .pc-btn:hover{ background:rgba(255,255,255,0.12); }
   .pc-btn.active{ background: var(--grad-yap); color:#0a0a0f; border-color:transparent; }
   .pc-btn svg{ width:12px; height:12px; }
-
   .result-actions{ display:flex; gap:7px; margin-top:12px; }
-  .ra-btn{
-    flex:1; padding:9px 8px; border-radius:10px;
-    background:rgba(255,255,255,0.06); border:1px solid var(--stroke);
-    color:#fff; font-family:inherit; font-size:11.5px; font-weight:600;
-    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;
-    transition:.2s;
-  }
+  .ra-btn{ flex:1; padding:9px 8px; border-radius:10px; background:rgba(255,255,255,0.06); border:1px solid var(--stroke); color:#fff; font-family:inherit; font-size:11.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px; transition:.2s; }
   .ra-btn:hover{ background:rgba(255,255,255,0.12); }
   .ra-btn svg{ width:13px; height:13px; }
-  .ra-btn.primary{
-    background: var(--grad-cyan); border-color:transparent;
-    box-shadow: 0 4px 12px rgba(34,211,238,0.3);
-  }
+  .ra-btn.primary{ background: var(--grad-cyan); border-color:transparent; box-shadow: 0 4px 12px rgba(34,211,238,0.3); }
 
-  /* HISTORY */
-  .hist-item{
-    display:flex; align-items:center; gap:11px;
-    padding:11px; background:var(--surface); border:1px solid var(--stroke);
-    border-radius:var(--r-md); margin-bottom:8px; cursor:pointer;
-    transition:.2s;
-  }
+  .hist-item{ display:flex; align-items:center; gap:11px; padding:11px; background:var(--surface); border:1px solid var(--stroke); border-radius:var(--r-md); margin-bottom:8px; cursor:pointer; transition:.2s; }
   .hist-item:hover{ background:var(--surface-2); }
-  .hist-av{
-    width:40px; height:40px; border-radius:50%; flex-shrink:0;
-    display:grid; place-items:center; color:#fff; font-weight:800; font-size:13px;
-    font-family:'Unbounded', sans-serif;
-  }
+  .hist-av{ width:40px; height:40px; border-radius:50%; flex-shrink:0; display:grid; place-items:center; color:#fff; font-weight:800; font-size:13px; font-family:'Unbounded', sans-serif; }
   .hist-info{ flex:1; min-width:0; }
   .hist-info b{ font-size:13px; font-weight:700; display:flex; align-items:center; gap:5px; }
   .hist-info .h-cat{ width:11px; height:11px; color:var(--muted); }
-  .hist-info small{
-    font-size:11px; color:var(--muted); display:block;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;
-  }
+  .hist-info small{ font-size:11px; color:var(--muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
   .hist-meta{ display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
   .hist-time{ font-size:10px; color:var(--muted-2); }
-  .hist-play{
-    width:28px; height:28px; border-radius:50%;
-    background:var(--surface-2); border:1px solid var(--stroke);
-    display:grid; place-items:center; color:#fff;
-  }
+  .hist-play{ width:28px; height:28px; border-radius:50%; background:var(--surface-2); border:1px solid var(--stroke); display:grid; place-items:center; color:#fff; }
   .hist-play svg{ width:11px; height:11px; margin-left:1px; }
 
-  /* PREMIUM BANNER */
-  .premium{
-    margin: 14px 0 4px;
-    background: linear-gradient(135deg, rgba(245,166,35,0.16), rgba(236,72,153,0.10));
-    border:1px solid rgba(245,166,35,0.3);
-    border-radius:var(--r-lg); padding:14px;
-    display:flex; align-items:center; gap:12px;
-    position:relative; overflow:hidden;
-  }
-  .premium::before{
-    content:''; position:absolute; right:-30px; top:-30px;
-    width:100px; height:100px; border-radius:50%;
-    background: radial-gradient(circle, rgba(245,166,35,0.3), transparent 70%);
-  }
-  .prem-icon{
-    width:42px; height:42px; border-radius:12px;
-    background: linear-gradient(135deg, #f5a623, #ec4899);
-    display:grid; place-items:center; flex-shrink:0;
-    box-shadow: 0 6px 16px rgba(245,166,35,0.4);
-  }
+  .premium{ margin: 14px 0 4px; background: linear-gradient(135deg, rgba(245,166,35,0.16), rgba(236,72,153,0.10)); border:1px solid rgba(245,166,35,0.3); border-radius:var(--r-lg); padding:14px; display:flex; align-items:center; gap:12px; position:relative; overflow:hidden; }
+  .premium::before{ content:''; position:absolute; right:-30px; top:-30px; width:100px; height:100px; border-radius:50%; background: radial-gradient(circle, rgba(245,166,35,0.3), transparent 70%); }
+  .prem-icon{ width:42px; height:42px; border-radius:12px; background: linear-gradient(135deg, #f5a623, #ec4899); display:grid; place-items:center; flex-shrink:0; box-shadow: 0 6px 16px rgba(245,166,35,0.4); }
   .prem-icon svg{ width:22px; height:22px; }
   .prem-text{ flex:1; }
   .prem-text b{ font-size:13.5px; font-weight:800; display:block; }
   .prem-text small{ font-size:11px; color:var(--muted); }
-  .prem-btn{
-    background:#fff; color:#000; border:none;
-    padding:8px 14px; border-radius:10px; font-weight:800; font-size:12px;
-    font-family:inherit; cursor:pointer; flex-shrink:0;
-  }
+  .prem-btn{ background:#fff; color:#000; border:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:12px; font-family:inherit; cursor:pointer; flex-shrink:0; }
+  .prem-btn.disabled{ opacity:.5; cursor:not-allowed; }
 
-  /* STATS ROW */
-  .stats{
-    display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px;
-  }
-  .stat{
-    background:var(--surface); border:1px solid var(--stroke);
-    border-radius:var(--r-md); padding:11px 8px; text-align:center;
-  }
-  .stat b{
-    display:block; font-family:'Unbounded', sans-serif; font-weight:800; font-size:18px;
-    background:var(--grad-yap); -webkit-background-clip:text; background-clip:text; color:transparent;
-    line-height:1.1;
-  }
+  .stats{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px; }
+  .stat{ background:var(--surface); border:1px solid var(--stroke); border-radius:var(--r-md); padding:11px 8px; text-align:center; }
+  .stat b{ display:block; font-family:'Unbounded', sans-serif; font-weight:800; font-size:18px; background:var(--grad-yap); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1.1; }
   .stat small{ font-size:10px; color:var(--muted); display:block; margin-top:3px; }
 
-  /* BOTTOM NAV */
-  .nav{
-    position:absolute; bottom:0; left:0; right:0; z-index:10;
-    padding: 10px 16px calc(10px + var(--safe-bottom));
-    background: rgba(10,10,15,0.85);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--stroke);
-    display:flex; justify-content:space-around;
-  }
-  .nav-item{
-    display:flex; flex-direction:column; align-items:center; gap:3px;
-    color:var(--muted-2); cursor:pointer; padding:4px 12px; border-radius:10px;
-    font-size:10px; font-weight:600; transition:.2s;
-  }
+  .nav{ position:absolute; bottom:0; left:0; right:0; z-index:10; padding: 10px 16px calc(10px + var(--safe-bottom)); background: rgba(10,10,15,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--stroke); display:flex; justify-content:space-around; }
+  .nav-item{ display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--muted-2); cursor:pointer; padding:4px 12px; border-radius:10px; font-size:10px; font-weight:600; transition:.2s; }
   .nav-item svg{ width:21px; height:21px; }
   .nav-item.active{ color:#fff; }
   .nav-item.active .nav-ico{ background: var(--grad-yap); color:#0a0a0f; }
-  .nav-ico{
-    width:32px; height:32px; border-radius:10px;
-    display:grid; place-items:center;
-    transition:.2s;
-  }
-  .nav-fab{
-    width:50px; height:50px; border-radius:50%;
-    background: var(--grad-yap); display:grid; place-items:center;
-    margin-top: -22px;
-    box-shadow: 0 8px 20px rgba(163,230,53,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
-    cursor:pointer;
-  }
+  .nav-ico{ width:32px; height:32px; border-radius:10px; display:grid; place-items:center; transition:.2s; }
+  .nav-fab{ width:50px; height:50px; border-radius:50%; background: var(--grad-yap); display:grid; place-items:center; margin-top: -22px; box-shadow: 0 8px 20px rgba(163,230,53,0.4), inset 0 1px 0 rgba(255,255,255,0.4); cursor:pointer; }
   .nav-fab svg{ width:22px; height:22px; color:#0a0a0f; }
 
-  /* TOAST */
-  .toast{
-    position:absolute; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
-    background: rgba(20,20,30,0.95); backdrop-filter: blur(20px);
-    border:1px solid var(--stroke-2);
-    padding:11px 18px; border-radius:12px;
-    font-size:13px; font-weight:600; color:#fff;
-    z-index:50; opacity:0; pointer-events:none;
-    transition:.3s; display:flex; align-items:center; gap:8px;
-    white-space:nowrap; max-width:90vw;
-  }
+  .toast{ position:absolute; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px); background: rgba(20,20,30,0.95); backdrop-filter: blur(20px); border:1px solid var(--stroke-2); padding:11px 18px; border-radius:12px; font-size:13px; font-weight:600; color:#fff; z-index:50; opacity:0; pointer-events:none; transition:.3s; display:flex; align-items:center; gap:8px; white-space:nowrap; max-width:90vw; }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   .toast svg{ width:15px; height:15px; color: var(--lime); flex-shrink:0; }
 
   .empty{ text-align:center; padding: 40px 20px; color: var(--muted); }
-  .empty-ico{
-    width:64px; height:64px; border-radius:50%;
-    background: var(--surface); border:1px solid var(--stroke);
-    display:grid; place-items:center; margin: 0 auto 14px;
-  }
+  .empty-ico{ width:64px; height:64px; border-radius:50%; background: var(--surface); border:1px solid var(--stroke); display:grid; place-items:center; margin: 0 auto 14px; }
   .empty-ico svg{ width:28px; height:28px; color: var(--muted-2); }
   .empty b{ display:block; font-size:14px; color:#fff; margin-bottom:5px; }
   .empty small{ font-size:12px; }
 
-  /* VOICES GRID */
   .vgrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .vgrid .vcard{ width:auto; }
+
+  /* TTS engine status badge */
+  .engine-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    background: rgba(34,211,238,0.12); border:1px solid rgba(34,211,238,0.3);
+    color: var(--cyan); padding:3px 8px; border-radius:6px;
+    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .engine-badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--cyan); animation: pulse 2s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.4;} }
+  .engine-badge.mock{ background: rgba(245,166,35,0.12); border-color: rgba(245,166,35,0.3); color: var(--amber); }
+  .engine-badge.mock .dot{ background: var(--amber); }
 </style>
 </head>
 <body>
@@ -591,10 +379,10 @@
       </div>
       <div>
         <div class="brand-name">Neuro<span>Yap</span></div>
-        <div class="brand-tag">AI Yap Engine</div>
+        <div class="brand-tag" id="brandTag">AI Yap Engine · <span class="engine-badge mock" id="engineBadge"><span class="dot"></span>DEMO</span></div>
       </div>
     </div>
-    <div class="balance">
+    <div class="balance" id="balanceBtn">
       <div class="coin">Y</div>
       <span id="coins">240</span>
     </div>
@@ -607,7 +395,7 @@
     </div>
     <div class="tab" data-tab="voices">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4Z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-      Голоса <span class="badge" id="vCount">24</span>
+      Голоса <span class="badge" id="vCount">124</span>
     </div>
     <div class="tab" data-tab="history">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -627,7 +415,7 @@
 
       <div class="sec-head">
         <div class="sec-title">Выбери голос</div>
-        <div class="sec-link" data-jump="voices">Все 24 →</div>
+        <button class="sec-link" data-jump="voices">Все 124 →</button>
       </div>
 
       <div class="chips" id="genChips"></div>
@@ -635,7 +423,7 @@
 
       <div class="sec-head" style="margin-top:14px;">
         <div class="sec-title">Что сказать?</div>
-        <button class="sec-link" id="rndText" style="background:none;border:none;cursor:pointer;font-family:inherit;">🎲 Рандом</button>
+        <button class="sec-link" id="rndText">🎲 Рандом</button>
       </div>
 
       <div class="input-wrap">
@@ -670,7 +458,7 @@
       </button>
       <div class="gen-cost">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
-        Стоимость: 5 yap-коинов · ~3 сек
+        Стоимость: 5 yap-коинов · ~3 сек · движок: <span id="engineName">DEMO</span>
       </div>
 
       <div class="result" id="result">
@@ -728,9 +516,9 @@
         </div>
         <div class="prem-text">
           <b>NeuroYap PRO</b>
-          <small>Безлимит · 124 голоса · без очереди</small>
+          <small>Безлимит · 124 голоса · без очереди · скоро через Telegram Stars ⭐</small>
         </div>
-        <button class="prem-btn" id="premBtn">299₽</button>
+        <button class="prem-btn disabled" id="premBtn">Скоро</button>
       </div>
     </div>
 
@@ -748,7 +536,7 @@
     <div class="view" data-view="history">
       <div class="sec-head">
         <div class="sec-title">Недавние</div>
-        <div class="sec-link" id="clearHist">Очистить</div>
+        <button class="sec-link" id="clearHist">Очистить</button>
       </div>
       <div id="histList"></div>
     </div>
@@ -784,7 +572,36 @@
 </div>
 
 <script>
-/* ====== CATEGORY ICONS (SVG strings) ====== */
+/* ===== TELEGRAM WEBAPP SDK INIT ===== */
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  // Apply theme params
+  if (tg.themeParams) {
+    const tp = tg.themeParams;
+    if (tp.bg_color) document.documentElement.style.setProperty('--tg-bg', tp.bg_color);
+    if (tp.text_color) document.documentElement.style.setProperty('--tg-text', tp.text_color);
+    if (tp.hint_color) document.documentElement.style.setProperty('--tg-hint', tp.hint_color);
+    if (tp.link_color) document.documentElement.style.setProperty('--tg-link', tp.link_color);
+    if (tp.button_color) document.documentElement.style.setProperty('--tg-button', tp.button_color);
+    if (tp.button_text_color) document.documentElement.style.setProperty('--tg-button-text', tp.button_text_color);
+  }
+  // Vertical swipes enabled for content scroll
+  if (tg.enableVerticalSwipes) tg.enableVerticalSwipes();
+}
+
+/* Haptic helper */
+function haptic(type='light'){
+  if (!tg || !tg.HapticFeedback) return;
+  try {
+    if (type === 'light' || type === 'medium' || type === 'heavy') tg.HapticFeedback.impactOccurred(type);
+    else if (type === 'success' || type === 'error' || type === 'warning') tg.HapticFeedback.notificationOccurred(type);
+    else if (type === 'selection') tg.HapticFeedback.selectionChanged();
+  } catch(e){}
+}
+
+/* ===== CATEGORY ICONS ===== */
 const IC = {
   streamer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a8 8 0 0 1 16 0M4 14a8 8 0 0 0 16 0M8 12h8"/></svg>',
   meme: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>',
@@ -796,7 +613,6 @@ const IC = {
   vip: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3 7 7 .6-5.3 4.6L18 22l-6-4-6 4 1.3-7.8L2 9.6 9 9l3-7Z"/></svg>',
 };
 
-/* ====== CATEGORIES ====== */
 const CATS = [
   { id:'all', name:'Все', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a16 16 0 0 1 0 18M12 3a16 16 0 0 0 0 18"/></svg>' },
   { id:'streamer', name:'Стримеры', icon: IC.streamer },
@@ -809,41 +625,1372 @@ const CATS = [
   { id:'vip', name:'VIP', icon: IC.vip },
 ];
 
-/* ====== VOICES (24) ====== */
+/* VOICES data — will be filled by voices_data.js (124 voices) */
 const VOICES = [
-  // streamers
-  { id:'hyp', name:'Хайпстрим', cat:'streamer', initials:'ХП', color:'#8b5cf6', tag:'top', uses:'4.2M', pitch:0.8 },
-  { id:'tt', name:'ТикТок Бог', cat:'streamer', initials:'ТТ', color:'#06b6d4', tag:'top', uses:'3.1M', pitch:1.1 },
-  { id:'twitch', name:'Твиччан', cat:'streamer', initials:'ТВ', color:'#9146ff', tag:'', uses:'1.8M', pitch:0.9 },
-  { id:'kik', name:'Кикер 228', cat:'streamer', initials:'КК', color:'#22d3ee', tag:'new', uses:'640K', pitch:1.2 },
-  // memes
-  { id:'ded', name:'Мемный Дед', cat:'meme', initials:'МД', color:'#f59e0b', tag:'hot', uses:'5.8M', pitch:0.6 },
-  { id:'vit', name:'Гопник Витя', cat:'meme', initials:'ГВ', color:'#22c55e', tag:'top', uses:'4.1M', pitch:0.85 },
-  { id:'skuf', name:'Скуф Валера', cat:'meme', initials:'СВ', color:'#a16207', tag:'new', uses:'920K', pitch:0.7 },
-  { id:'kol', name:'Дядя Колян', cat:'meme', initials:'ДК', color:'#dc2626', tag:'', uses:'2.3M', pitch:0.75 },
-  // anime
-  { id:'ani', name:'Анимешница', cat:'anime', initials:'АН', color:'#ec4899', tag:'hot', uses:'2.9M', pitch:1.4 },
-  { id:'sen', name:'Сенпай', cat:'anime', initials:'СП', color:'#f43f5e', tag:'new', uses:'780K', pitch:0.95 },
-  { id:'tsun', name:'Цундере', cat:'anime', initials:'ЦД', color:'#fb7185', tag:'', uses:'1.1M', pitch:1.3 },
-  { id:'kaw', name:'Кавайка', cat:'anime', initials:'КВ', color:'#f9a8d4', tag:'hot', uses:'1.7M', pitch:1.5 },
-  // gaming
-  { id:'cryp', name:'Крипер 228', cat:'gaming', initials:'КР', color:'#10b981', tag:'hot', uses:'3.4M', pitch:0.9 },
-  { id:'noob', name:'Нубик', cat:'gaming', initials:'НБ', color:'#84cc16', tag:'', uses:'1.3M', pitch:1.1 },
-  { id:'pro', name:'Про_228', cat:'gaming', initials:'ПР', color:'#0891b2', tag:'top', uses:'2.0M', pitch:0.95 },
-  { id:'sqd', name:'Сквад Лидер', cat:'gaming', initials:'СЛ', color:'#6366f1', tag:'', uses:'880K', pitch:0.8 },
-  // kino
-  { id:'maf', name:'Дон Палуччи', cat:'kino', initials:'ДП', color:'#7f1d1d', tag:'', uses:'1.5M', pitch:0.55 },
-  { id:'det', name:'Детектив Рэй', cat:'kino', initials:'ДР', color:'#1e3a8a', tag:'new', uses:'410K', pitch:0.75 },
-  { id:'vil', name:'Злодей Зет', cat:'kino', initials:'ЗЗ', color:'#000000', tag:'', uses:'670K', pitch:0.6 },
-  // music
-  { id:'dj', name:'Диджей Митя', cat:'music', initials:'ДМ', color:'#a855f7', tag:'', uses:'920K', pitch:1.0 },
-  { id:'rap', name:'Рэпер Янг', cat:'music', initials:'РЯ', color:'#facc15', tag:'hot', uses:'2.2M', pitch:0.85 },
-  // ai
-  { id:'neu', name:'Нейродевочка', cat:'ai', initials:'НД', color:'#22d3ee', tag:'top', uses:'3.9M', pitch:1.25 },
-  { id:'rob', name:'Робот X7', cat:'ai', initials:'РБ', color:'#64748b', tag:'', uses:'1.0M', pitch:0.5 },
-  // vip
-  { id:'god', name:'Голос Бога', cat:'vip', initials:'ГБ', color:'#fbbf24', tag:'pro', uses:'440K', pitch:0.7, locked:true },
-  { id:'demon', name:'Демон Аз', cat:'vip', initials:'ДА', color:'#dc2626', tag:'pro', uses:'290K', pitch:0.4, locked:true },
+  {
+    "id": "str00",
+    "name": "Хайпстрим",
+    "cat": "streamer",
+    "initials": "ХП",
+    "color": "#8b5cf6",
+    "tag": "top",
+    "uses": "2.4M",
+    "pitch": 0.89,
+    "locked": false
+  },
+  {
+    "id": "str01",
+    "name": "ТикТок Бог",
+    "cat": "streamer",
+    "initials": "ТТ",
+    "color": "#9146ff",
+    "tag": "top",
+    "uses": "1.1M",
+    "pitch": 0.88,
+    "locked": false
+  },
+  {
+    "id": "str02",
+    "name": "Твиччан",
+    "cat": "streamer",
+    "initials": "ТВ",
+    "color": "#06b6d4",
+    "tag": "top",
+    "uses": "818K",
+    "pitch": 1.01,
+    "locked": false
+  },
+  {
+    "id": "str03",
+    "name": "Кикер 228",
+    "cat": "streamer",
+    "initials": "КК",
+    "color": "#a855f7",
+    "tag": "",
+    "uses": "263K",
+    "pitch": 1.06,
+    "locked": false
+  },
+  {
+    "id": "str04",
+    "name": "Стрим Кинг",
+    "cat": "streamer",
+    "initials": "СК",
+    "color": "#6366f1",
+    "tag": "",
+    "uses": "1.2M",
+    "pitch": 0.96,
+    "locked": false
+  },
+  {
+    "id": "str05",
+    "name": "Лайв Лорд",
+    "cat": "streamer",
+    "initials": "ЛЛ",
+    "color": "#7c3aed",
+    "tag": "",
+    "uses": "649K",
+    "pitch": 0.89,
+    "locked": false
+  },
+  {
+    "id": "str06",
+    "name": "Чат Мастер",
+    "cat": "streamer",
+    "initials": "ЧМ",
+    "color": "#8b5cf6",
+    "tag": "",
+    "uses": "6.6M",
+    "pitch": 1.02,
+    "locked": false
+  },
+  {
+    "id": "str07",
+    "name": "Донатчик",
+    "cat": "streamer",
+    "initials": "ДТ",
+    "color": "#9146ff",
+    "tag": "hot",
+    "uses": "181K",
+    "pitch": 1.11,
+    "locked": false
+  },
+  {
+    "id": "str08",
+    "name": "Подписчик",
+    "cat": "streamer",
+    "initials": "ПД",
+    "color": "#06b6d4",
+    "tag": "",
+    "uses": "6.6M",
+    "pitch": 0.9,
+    "locked": false
+  },
+  {
+    "id": "str09",
+    "name": "Фоловер 9",
+    "cat": "streamer",
+    "initials": "Ф9",
+    "color": "#a855f7",
+    "tag": "",
+    "uses": "275K",
+    "pitch": 1.01,
+    "locked": false
+  },
+  {
+    "id": "str10",
+    "name": "Бустер",
+    "cat": "streamer",
+    "initials": "БТ",
+    "color": "#6366f1",
+    "tag": "",
+    "uses": "6.9M",
+    "pitch": 0.92,
+    "locked": false
+  },
+  {
+    "id": "str11",
+    "name": "Хост Мэн",
+    "cat": "streamer",
+    "initials": "ХМ",
+    "color": "#7c3aed",
+    "tag": "",
+    "uses": "4.5M",
+    "pitch": 0.87,
+    "locked": false
+  },
+  {
+    "id": "str12",
+    "name": "Клипмейкер",
+    "cat": "streamer",
+    "initials": "КМ",
+    "color": "#8b5cf6",
+    "tag": "",
+    "uses": "4.8M",
+    "pitch": 0.89,
+    "locked": false
+  },
+  {
+    "id": "str13",
+    "name": "Рейдлер",
+    "cat": "streamer",
+    "initials": "РД",
+    "color": "#9146ff",
+    "tag": "",
+    "uses": "6.7M",
+    "pitch": 1.12,
+    "locked": false
+  },
+  {
+    "id": "str14",
+    "name": "Стримерша",
+    "cat": "streamer",
+    "initials": "СТ",
+    "color": "#06b6d4",
+    "tag": "hot",
+    "uses": "1.1M",
+    "pitch": 1.11,
+    "locked": false
+  },
+  {
+    "id": "str15",
+    "name": "Кибер Герл",
+    "cat": "streamer",
+    "initials": "КГ",
+    "color": "#a855f7",
+    "tag": "",
+    "uses": "710K",
+    "pitch": 1.15,
+    "locked": false
+  },
+  {
+    "id": "mem00",
+    "name": "Мемный Дед",
+    "cat": "meme",
+    "initials": "МД",
+    "color": "#f59e0b",
+    "tag": "top",
+    "uses": "1.2M",
+    "pitch": 0.92,
+    "locked": false
+  },
+  {
+    "id": "mem01",
+    "name": "Гопник Витя",
+    "cat": "meme",
+    "initials": "ГВ",
+    "color": "#22c55e",
+    "tag": "top",
+    "uses": "180K",
+    "pitch": 0.58,
+    "locked": false
+  },
+  {
+    "id": "mem02",
+    "name": "Скуф Валера",
+    "cat": "meme",
+    "initials": "СВ",
+    "color": "#dc2626",
+    "tag": "top",
+    "uses": "8.9M",
+    "pitch": 0.62,
+    "locked": false
+  },
+  {
+    "id": "mem03",
+    "name": "Дядя Колян",
+    "cat": "meme",
+    "initials": "ДК",
+    "color": "#a16207",
+    "tag": "",
+    "uses": "508K",
+    "pitch": 0.95,
+    "locked": false
+  },
+  {
+    "id": "mem04",
+    "name": "Шлёпа",
+    "cat": "meme",
+    "initials": "ШЛ",
+    "color": "#84cc16",
+    "tag": "",
+    "uses": "1.4M",
+    "pitch": 0.64,
+    "locked": false
+  },
+  {
+    "id": "mem05",
+    "name": "Кот Пес",
+    "cat": "meme",
+    "initials": "КП",
+    "color": "#ca8a04",
+    "tag": "",
+    "uses": "107K",
+    "pitch": 0.58,
+    "locked": false
+  },
+  {
+    "id": "mem06",
+    "name": "Жаба Ква",
+    "cat": "meme",
+    "initials": "ЖК",
+    "color": "#f59e0b",
+    "tag": "",
+    "uses": "172K",
+    "pitch": 0.76,
+    "locked": false
+  },
+  {
+    "id": "mem07",
+    "name": "Утка Дак",
+    "cat": "meme",
+    "initials": "УД",
+    "color": "#22c55e",
+    "tag": "hot",
+    "uses": "684K",
+    "pitch": 0.78,
+    "locked": false
+  },
+  {
+    "id": "mem08",
+    "name": "Лягух 228",
+    "cat": "meme",
+    "initials": "ЛЯ",
+    "color": "#dc2626",
+    "tag": "",
+    "uses": "7.6M",
+    "pitch": 0.72,
+    "locked": false
+  },
+  {
+    "id": "mem09",
+    "name": "Попугай Кеша",
+    "cat": "meme",
+    "initials": "ПК",
+    "color": "#a16207",
+    "tag": "",
+    "uses": "6.2M",
+    "pitch": 0.65,
+    "locked": false
+  },
+  {
+    "id": "mem10",
+    "name": "Бабуля Зоя",
+    "cat": "meme",
+    "initials": "БЗ",
+    "color": "#84cc16",
+    "tag": "",
+    "uses": "2.5M",
+    "pitch": 0.74,
+    "locked": false
+  },
+  {
+    "id": "mem11",
+    "name": "Дед Пихто",
+    "cat": "meme",
+    "initials": "ДП",
+    "color": "#ca8a04",
+    "tag": "",
+    "uses": "9.1M",
+    "pitch": 0.94,
+    "locked": false
+  },
+  {
+    "id": "mem12",
+    "name": "Бомж Гена",
+    "cat": "meme",
+    "initials": "БГ",
+    "color": "#f59e0b",
+    "tag": "",
+    "uses": "4.4M",
+    "pitch": 0.9,
+    "locked": false
+  },
+  {
+    "id": "mem13",
+    "name": "Сосед Вован",
+    "cat": "meme",
+    "initials": "СВ",
+    "color": "#22c55e",
+    "tag": "",
+    "uses": "371K",
+    "pitch": 0.92,
+    "locked": false
+  },
+  {
+    "id": "mem14",
+    "name": "Сантехник",
+    "cat": "meme",
+    "initials": "СН",
+    "color": "#dc2626",
+    "tag": "hot",
+    "uses": "2.4M",
+    "pitch": 0.67,
+    "locked": false
+  },
+  {
+    "id": "mem15",
+    "name": "Электрик",
+    "cat": "meme",
+    "initials": "ЭЛ",
+    "color": "#a16207",
+    "tag": "",
+    "uses": "1.1M",
+    "pitch": 0.78,
+    "locked": false
+  },
+  {
+    "id": "ani00",
+    "name": "Анимешница",
+    "cat": "anime",
+    "initials": "АН",
+    "color": "#ec4899",
+    "tag": "top",
+    "uses": "4.9M",
+    "pitch": 1.29,
+    "locked": false
+  },
+  {
+    "id": "ani01",
+    "name": "Сенпай",
+    "cat": "anime",
+    "initials": "СП",
+    "color": "#f43f5e",
+    "tag": "top",
+    "uses": "2.8M",
+    "pitch": 1.49,
+    "locked": false
+  },
+  {
+    "id": "ani02",
+    "name": "Цундере",
+    "cat": "anime",
+    "initials": "ЦД",
+    "color": "#fb7185",
+    "tag": "top",
+    "uses": "667K",
+    "pitch": 1.3,
+    "locked": false
+  },
+  {
+    "id": "ani03",
+    "name": "Кавайка",
+    "cat": "anime",
+    "initials": "КВ",
+    "color": "#f9a8d4",
+    "tag": "",
+    "uses": "860K",
+    "pitch": 1.39,
+    "locked": false
+  },
+  {
+    "id": "ani04",
+    "name": "Яндере",
+    "cat": "anime",
+    "initials": "ЯД",
+    "color": "#e11d48",
+    "tag": "",
+    "uses": "2.5M",
+    "pitch": 1.38,
+    "locked": false
+  },
+  {
+    "id": "ani05",
+    "name": "Коухай",
+    "cat": "anime",
+    "initials": "КХ",
+    "color": "#be185d",
+    "tag": "",
+    "uses": "3.1M",
+    "pitch": 1.2,
+    "locked": false
+  },
+  {
+    "id": "ani06",
+    "name": "Меганека",
+    "cat": "anime",
+    "initials": "МГ",
+    "color": "#ec4899",
+    "tag": "",
+    "uses": "664K",
+    "pitch": 1.45,
+    "locked": false
+  },
+  {
+    "id": "ani07",
+    "name": "Лоли",
+    "cat": "anime",
+    "initials": "ЛО",
+    "color": "#f43f5e",
+    "tag": "hot",
+    "uses": "954K",
+    "pitch": 1.33,
+    "locked": false
+  },
+  {
+    "id": "ani08",
+    "name": "Шёгун",
+    "cat": "anime",
+    "initials": "ШГ",
+    "color": "#fb7185",
+    "tag": "",
+    "uses": "915K",
+    "pitch": 1.54,
+    "locked": false
+  },
+  {
+    "id": "ani09",
+    "name": "Самурай",
+    "cat": "anime",
+    "initials": "СМ",
+    "color": "#f9a8d4",
+    "tag": "",
+    "uses": "462K",
+    "pitch": 1.47,
+    "locked": false
+  },
+  {
+    "id": "ani10",
+    "name": "Ниндзя",
+    "cat": "anime",
+    "initials": "НД",
+    "color": "#e11d48",
+    "tag": "",
+    "uses": "342K",
+    "pitch": 1.5,
+    "locked": false
+  },
+  {
+    "id": "ani11",
+    "name": "Гейша",
+    "cat": "anime",
+    "initials": "ГС",
+    "color": "#be185d",
+    "tag": "",
+    "uses": "440K",
+    "pitch": 1.47,
+    "locked": false
+  },
+  {
+    "id": "ani12",
+    "name": "Манга Кид",
+    "cat": "anime",
+    "initials": "МК",
+    "color": "#ec4899",
+    "tag": "",
+    "uses": "139K",
+    "pitch": 1.5,
+    "locked": false
+  },
+  {
+    "id": "ani13",
+    "name": "Отаку",
+    "cat": "anime",
+    "initials": "ОТ",
+    "color": "#f43f5e",
+    "tag": "",
+    "uses": "2.4M",
+    "pitch": 1.21,
+    "locked": false
+  },
+  {
+    "id": "ani14",
+    "name": "Косплейер",
+    "cat": "anime",
+    "initials": "КП",
+    "color": "#fb7185",
+    "tag": "hot",
+    "uses": "385K",
+    "pitch": 1.32,
+    "locked": false
+  },
+  {
+    "id": "ani15",
+    "name": "Вайфу",
+    "cat": "anime",
+    "initials": "ВФ",
+    "color": "#f9a8d4",
+    "tag": "",
+    "uses": "1.2M",
+    "pitch": 1.51,
+    "locked": false
+  },
+  {
+    "id": "gam00",
+    "name": "Крипер 228",
+    "cat": "gaming",
+    "initials": "КР",
+    "color": "#10b981",
+    "tag": "top",
+    "uses": "5.3M",
+    "pitch": 0.88,
+    "locked": false
+  },
+  {
+    "id": "gam01",
+    "name": "Нубик",
+    "cat": "gaming",
+    "initials": "НБ",
+    "color": "#0891b2",
+    "tag": "top",
+    "uses": "408K",
+    "pitch": 0.96,
+    "locked": false
+  },
+  {
+    "id": "gam02",
+    "name": "Про_228",
+    "cat": "gaming",
+    "initials": "ПР",
+    "color": "#6366f1",
+    "tag": "top",
+    "uses": "693K",
+    "pitch": 1.04,
+    "locked": false
+  },
+  {
+    "id": "gam03",
+    "name": "Сквад Лидер",
+    "cat": "gaming",
+    "initials": "СЛ",
+    "color": "#84cc16",
+    "tag": "",
+    "uses": "912K",
+    "pitch": 1.16,
+    "locked": false
+  },
+  {
+    "id": "gam04",
+    "name": "Снайпер",
+    "cat": "gaming",
+    "initials": "СН",
+    "color": "#14b8a6",
+    "tag": "",
+    "uses": "5.6M",
+    "pitch": 0.84,
+    "locked": false
+  },
+  {
+    "id": "gam05",
+    "name": "Танкер",
+    "cat": "gaming",
+    "initials": "ТК",
+    "color": "#0d9488",
+    "tag": "",
+    "uses": "250K",
+    "pitch": 0.81,
+    "locked": false
+  },
+  {
+    "id": "gam06",
+    "name": "Хилер",
+    "cat": "gaming",
+    "initials": "ХЛ",
+    "color": "#10b981",
+    "tag": "",
+    "uses": "4.4M",
+    "pitch": 1.09,
+    "locked": false
+  },
+  {
+    "id": "gam07",
+    "name": "ДДС",
+    "cat": "gaming",
+    "initials": "ДС",
+    "color": "#0891b2",
+    "tag": "hot",
+    "uses": "105K",
+    "pitch": 1.16,
+    "locked": false
+  },
+  {
+    "id": "gam08",
+    "name": "Камикадзе",
+    "cat": "gaming",
+    "initials": "КМ",
+    "color": "#6366f1",
+    "tag": "",
+    "uses": "9.8M",
+    "pitch": 0.82,
+    "locked": false
+  },
+  {
+    "id": "gam09",
+    "name": "Глитчер",
+    "cat": "gaming",
+    "initials": "ГЛ",
+    "color": "#84cc16",
+    "tag": "",
+    "uses": "6.9M",
+    "pitch": 1.2,
+    "locked": false
+  },
+  {
+    "id": "gam10",
+    "name": "Спидраннер",
+    "cat": "gaming",
+    "initials": "СП",
+    "color": "#14b8a6",
+    "tag": "",
+    "uses": "5.8M",
+    "pitch": 1.16,
+    "locked": false
+  },
+  {
+    "id": "gam11",
+    "name": "Фармер",
+    "cat": "gaming",
+    "initials": "ФР",
+    "color": "#0d9488",
+    "tag": "",
+    "uses": "383K",
+    "pitch": 1.11,
+    "locked": false
+  },
+  {
+    "id": "gam12",
+    "name": "Грифер",
+    "cat": "gaming",
+    "initials": "ГФ",
+    "color": "#10b981",
+    "tag": "",
+    "uses": "4.2M",
+    "pitch": 1.09,
+    "locked": false
+  },
+  {
+    "id": "gam13",
+    "name": "Модер",
+    "cat": "gaming",
+    "initials": "МД",
+    "color": "#0891b2",
+    "tag": "",
+    "uses": "4.7M",
+    "pitch": 1.08,
+    "locked": false
+  },
+  {
+    "id": "gam14",
+    "name": "Админ",
+    "cat": "gaming",
+    "initials": "АД",
+    "color": "#6366f1",
+    "tag": "hot",
+    "uses": "3.9M",
+    "pitch": 0.99,
+    "locked": false
+  },
+  {
+    "id": "gam15",
+    "name": "Тестер",
+    "cat": "gaming",
+    "initials": "ТС",
+    "color": "#84cc16",
+    "tag": "",
+    "uses": "883K",
+    "pitch": 1.03,
+    "locked": false
+  },
+  {
+    "id": "kin00",
+    "name": "Дон Палуччи",
+    "cat": "kino",
+    "initials": "ДП",
+    "color": "#7f1d1d",
+    "tag": "top",
+    "uses": "3.6M",
+    "pitch": 0.75,
+    "locked": false
+  },
+  {
+    "id": "kin01",
+    "name": "Детектив Рэй",
+    "cat": "kino",
+    "initials": "ДР",
+    "color": "#1e3a8a",
+    "tag": "top",
+    "uses": "1.8M",
+    "pitch": 0.46,
+    "locked": false
+  },
+  {
+    "id": "kin02",
+    "name": "Злодей Зет",
+    "cat": "kino",
+    "initials": "ЗЗ",
+    "color": "#000000",
+    "tag": "top",
+    "uses": "767K",
+    "pitch": 0.47,
+    "locked": false
+  },
+  {
+    "id": "kin03",
+    "name": "Герой Гэри",
+    "cat": "kino",
+    "initials": "ГГ",
+    "color": "#7c2d12",
+    "tag": "",
+    "uses": "8.2M",
+    "pitch": 0.68,
+    "locked": false
+  },
+  {
+    "id": "kin04",
+    "name": "Агент Кей",
+    "cat": "kino",
+    "initials": "АК",
+    "color": "#581c87",
+    "tag": "",
+    "uses": "2.2M",
+    "pitch": 0.76,
+    "locked": false
+  },
+  {
+    "id": "kin05",
+    "name": "Шпион Икс",
+    "cat": "kino",
+    "initials": "ШИ",
+    "color": "#3730a3",
+    "tag": "",
+    "uses": "689K",
+    "pitch": 0.72,
+    "locked": false
+  },
+  {
+    "id": "kin06",
+    "name": "Ниндзя Блэк",
+    "cat": "kino",
+    "initials": "НБ",
+    "color": "#7f1d1d",
+    "tag": "",
+    "uses": "950K",
+    "pitch": 0.7,
+    "locked": false
+  },
+  {
+    "id": "kin07",
+    "name": "Ковбой Джо",
+    "cat": "kino",
+    "initials": "КД",
+    "color": "#1e3a8a",
+    "tag": "hot",
+    "uses": "679K",
+    "pitch": 0.76,
+    "locked": false
+  },
+  {
+    "id": "kin08",
+    "name": "Пират Хук",
+    "cat": "kino",
+    "initials": "ПХ",
+    "color": "#000000",
+    "tag": "",
+    "uses": "1.9M",
+    "pitch": 0.71,
+    "locked": false
+  },
+  {
+    "id": "kin09",
+    "name": "Викинг Тор",
+    "cat": "kino",
+    "initials": "ВТ",
+    "color": "#7c2d12",
+    "tag": "",
+    "uses": "3.8M",
+    "pitch": 0.73,
+    "locked": false
+  },
+  {
+    "id": "kin10",
+    "name": "Робин Гуд",
+    "cat": "kino",
+    "initials": "РГ",
+    "color": "#581c87",
+    "tag": "",
+    "uses": "5.9M",
+    "pitch": 0.76,
+    "locked": false
+  },
+  {
+    "id": "kin11",
+    "name": "Король Артур",
+    "cat": "kino",
+    "initials": "КА",
+    "color": "#3730a3",
+    "tag": "",
+    "uses": "3.4M",
+    "pitch": 0.78,
+    "locked": false
+  },
+  {
+    "id": "kin12",
+    "name": "Дракула",
+    "cat": "kino",
+    "initials": "ДР",
+    "color": "#7f1d1d",
+    "tag": "",
+    "uses": "5.7M",
+    "pitch": 0.58,
+    "locked": false
+  },
+  {
+    "id": "kin13",
+    "name": "Франкенштейн",
+    "cat": "kino",
+    "initials": "ФР",
+    "color": "#1e3a8a",
+    "tag": "",
+    "uses": "364K",
+    "pitch": 0.59,
+    "locked": false
+  },
+  {
+    "id": "kin14",
+    "name": "Зомби Боб",
+    "cat": "kino",
+    "initials": "ЗБ",
+    "color": "#000000",
+    "tag": "hot",
+    "uses": "7.8M",
+    "pitch": 0.67,
+    "locked": true
+  },
+  {
+    "id": "kin15",
+    "name": "Призрак",
+    "cat": "kino",
+    "initials": "ПР",
+    "color": "#7c2d12",
+    "tag": "",
+    "uses": "4.1M",
+    "pitch": 0.49,
+    "locked": true
+  },
+  {
+    "id": "mus00",
+    "name": "Диджей Митя",
+    "cat": "music",
+    "initials": "ДМ",
+    "color": "#a855f7",
+    "tag": "top",
+    "uses": "2.5M",
+    "pitch": 0.81,
+    "locked": false
+  },
+  {
+    "id": "mus01",
+    "name": "Рэпер Янг",
+    "cat": "music",
+    "initials": "РЯ",
+    "color": "#facc15",
+    "tag": "top",
+    "uses": "814K",
+    "pitch": 1.27,
+    "locked": false
+  },
+  {
+    "id": "mus02",
+    "name": "Битмаксер",
+    "cat": "music",
+    "initials": "БМ",
+    "color": "#ec4899",
+    "tag": "top",
+    "uses": "4.8M",
+    "pitch": 1.02,
+    "locked": false
+  },
+  {
+    "id": "mus03",
+    "name": "Певец Слава",
+    "cat": "music",
+    "initials": "ПС",
+    "color": "#22d3ee",
+    "tag": "",
+    "uses": "510K",
+    "pitch": 1.05,
+    "locked": false
+  },
+  {
+    "id": "mus04",
+    "name": "Вокалист",
+    "cat": "music",
+    "initials": "ВК",
+    "color": "#fb923c",
+    "tag": "",
+    "uses": "1.4M",
+    "pitch": 0.86,
+    "locked": false
+  },
+  {
+    "id": "mus05",
+    "name": "Басист",
+    "cat": "music",
+    "initials": "БС",
+    "color": "#34d399",
+    "tag": "",
+    "uses": "489K",
+    "pitch": 1.03,
+    "locked": false
+  },
+  {
+    "id": "mus06",
+    "name": "Барабанщик",
+    "cat": "music",
+    "initials": "БР",
+    "color": "#a855f7",
+    "tag": "",
+    "uses": "5.1M",
+    "pitch": 1.1,
+    "locked": false
+  },
+  {
+    "id": "mus07",
+    "name": "Гитарист",
+    "cat": "music",
+    "initials": "ГТ",
+    "color": "#facc15",
+    "tag": "hot",
+    "uses": "2.3M",
+    "pitch": 0.92,
+    "locked": false
+  },
+  {
+    "id": "mus08",
+    "name": "Скрипач",
+    "cat": "music",
+    "initials": "СК",
+    "color": "#ec4899",
+    "tag": "",
+    "uses": "4.8M",
+    "pitch": 0.95,
+    "locked": false
+  },
+  {
+    "id": "mus09",
+    "name": "Пианист",
+    "cat": "music",
+    "initials": "ПИ",
+    "color": "#22d3ee",
+    "tag": "",
+    "uses": "1.4M",
+    "pitch": 1.26,
+    "locked": false
+  },
+  {
+    "id": "mus10",
+    "name": "Саксофонист",
+    "cat": "music",
+    "initials": "СХ",
+    "color": "#fb923c",
+    "tag": "",
+    "uses": "372K",
+    "pitch": 1.21,
+    "locked": false
+  },
+  {
+    "id": "mus11",
+    "name": "Труба",
+    "cat": "music",
+    "initials": "ТР",
+    "color": "#34d399",
+    "tag": "",
+    "uses": "4.2M",
+    "pitch": 1.03,
+    "locked": false
+  },
+  {
+    "id": "mus12",
+    "name": "Рокер",
+    "cat": "music",
+    "initials": "РК",
+    "color": "#a855f7",
+    "tag": "",
+    "uses": "4.2M",
+    "pitch": 1.1,
+    "locked": false
+  },
+  {
+    "id": "mus13",
+    "name": "Панк",
+    "cat": "music",
+    "initials": "ПК",
+    "color": "#facc15",
+    "tag": "",
+    "uses": "1.2M",
+    "pitch": 0.91,
+    "locked": false
+  },
+  {
+    "id": "mus14",
+    "name": "Металист",
+    "cat": "music",
+    "initials": "МТ",
+    "color": "#ec4899",
+    "tag": "hot",
+    "uses": "5.1M",
+    "pitch": 1.18,
+    "locked": false
+  },
+  {
+    "id": "mus15",
+    "name": "Техно Лорд",
+    "cat": "music",
+    "initials": "ТЛ",
+    "color": "#22d3ee",
+    "tag": "",
+    "uses": "3.3M",
+    "pitch": 1.3,
+    "locked": false
+  },
+  {
+    "id": "ai00",
+    "name": "Нейродевочка",
+    "cat": "ai",
+    "initials": "НД",
+    "color": "#22d3ee",
+    "tag": "top",
+    "uses": "9.3M",
+    "pitch": 1.29,
+    "locked": false
+  },
+  {
+    "id": "ai01",
+    "name": "Робот X7",
+    "cat": "ai",
+    "initials": "РБ",
+    "color": "#64748b",
+    "tag": "top",
+    "uses": "418K",
+    "pitch": 0.97,
+    "locked": false
+  },
+  {
+    "id": "ai02",
+    "name": "Андроид Зета",
+    "cat": "ai",
+    "initials": "АЗ",
+    "color": "#8b5cf6",
+    "tag": "top",
+    "uses": "220K",
+    "pitch": 1.05,
+    "locked": false
+  },
+  {
+    "id": "ai03",
+    "name": "Киборг Альфа",
+    "cat": "ai",
+    "initials": "КА",
+    "color": "#3b82f6",
+    "tag": "",
+    "uses": "4.8M",
+    "pitch": 1.33,
+    "locked": false
+  },
+  {
+    "id": "ai04",
+    "name": "Голограмма",
+    "cat": "ai",
+    "initials": "ГЛ",
+    "color": "#0ea5e9",
+    "tag": "",
+    "uses": "2.9M",
+    "pitch": 1.13,
+    "locked": false
+  },
+  {
+    "id": "ai05",
+    "name": "Терминатор",
+    "cat": "ai",
+    "initials": "ТР",
+    "color": "#06b6d4",
+    "tag": "",
+    "uses": "5.5M",
+    "pitch": 1.2,
+    "locked": false
+  },
+  {
+    "id": "ai06",
+    "name": "Ассистент Пи",
+    "cat": "ai",
+    "initials": "АП",
+    "color": "#22d3ee",
+    "tag": "",
+    "uses": "2.8M",
+    "pitch": 0.96,
+    "locked": false
+  },
+  {
+    "id": "ai07",
+    "name": "Воксель",
+    "cat": "ai",
+    "initials": "ВК",
+    "color": "#64748b",
+    "tag": "hot",
+    "uses": "4.6M",
+    "pitch": 1.24,
+    "locked": false
+  },
+  {
+    "id": "ai08",
+    "name": "Синтезатор",
+    "cat": "ai",
+    "initials": "СТ",
+    "color": "#8b5cf6",
+    "tag": "",
+    "uses": "520K",
+    "pitch": 0.54,
+    "locked": false
+  },
+  {
+    "id": "ai09",
+    "name": "Глушилка",
+    "cat": "ai",
+    "initials": "ГШ",
+    "color": "#3b82f6",
+    "tag": "",
+    "uses": "6.3M",
+    "pitch": 0.92,
+    "locked": false
+  },
+  {
+    "id": "ai10",
+    "name": "Эхо Бот",
+    "cat": "ai",
+    "initials": "ЭБ",
+    "color": "#0ea5e9",
+    "tag": "",
+    "uses": "1.8M",
+    "pitch": 0.58,
+    "locked": false
+  },
+  {
+    "id": "ai11",
+    "name": "Робокоп",
+    "cat": "ai",
+    "initials": "РК",
+    "color": "#06b6d4",
+    "tag": "",
+    "uses": "770K",
+    "pitch": 1.32,
+    "locked": false
+  },
+  {
+    "id": "ai12",
+    "name": "Сайборг",
+    "cat": "ai",
+    "initials": "СБ",
+    "color": "#22d3ee",
+    "tag": "",
+    "uses": "6.2M",
+    "pitch": 1.22,
+    "locked": false
+  },
+  {
+    "id": "ai13",
+    "name": "Биомех",
+    "cat": "ai",
+    "initials": "БМ",
+    "color": "#64748b",
+    "tag": "",
+    "uses": "5.1M",
+    "pitch": 1.02,
+    "locked": false
+  },
+  {
+    "id": "ai14",
+    "name": "Механид",
+    "cat": "ai",
+    "initials": "МХ",
+    "color": "#8b5cf6",
+    "tag": "hot",
+    "uses": "200K",
+    "pitch": 1.15,
+    "locked": false
+  },
+  {
+    "id": "ai15",
+    "name": "Андроид Бета",
+    "cat": "ai",
+    "initials": "АБ",
+    "color": "#3b82f6",
+    "tag": "",
+    "uses": "1.1M",
+    "pitch": 0.78,
+    "locked": false
+  },
+  {
+    "id": "vip00",
+    "name": "Голос Бога",
+    "cat": "vip",
+    "initials": "ГБ",
+    "color": "#fbbf24",
+    "tag": "pro",
+    "uses": "973K",
+    "pitch": 0.57,
+    "locked": true
+  },
+  {
+    "id": "vip01",
+    "name": "Демон Аз",
+    "cat": "vip",
+    "initials": "ДА",
+    "color": "#dc2626",
+    "tag": "pro",
+    "uses": "6.5M",
+    "pitch": 0.41,
+    "locked": true
+  },
+  {
+    "id": "vip02",
+    "name": "Архангел",
+    "cat": "vip",
+    "initials": "АР",
+    "color": "#a855f7",
+    "tag": "pro",
+    "uses": "863K",
+    "pitch": 0.57,
+    "locked": true
+  },
+  {
+    "id": "vip03",
+    "name": "Левиафан",
+    "cat": "vip",
+    "initials": "ЛВ",
+    "color": "#f5a623",
+    "tag": "pro",
+    "uses": "2.4M",
+    "pitch": 0.62,
+    "locked": true
+  },
+  {
+    "id": "vip04",
+    "name": "Царь Сол",
+    "cat": "vip",
+    "initials": "ЦС",
+    "color": "#ec4899",
+    "tag": "pro",
+    "uses": "551K",
+    "pitch": 0.41,
+    "locked": true
+  },
+  {
+    "id": "vip05",
+    "name": "Фараон",
+    "cat": "vip",
+    "initials": "ФР",
+    "color": "#facc15",
+    "tag": "pro",
+    "uses": "6.7M",
+    "pitch": 0.46,
+    "locked": true
+  },
+  {
+    "id": "vip06",
+    "name": "Император",
+    "cat": "vip",
+    "initials": "ИМ",
+    "color": "#fbbf24",
+    "tag": "pro",
+    "uses": "2.5M",
+    "pitch": 0.72,
+    "locked": true
+  },
+  {
+    "id": "vip07",
+    "name": "Повелитель",
+    "cat": "vip",
+    "initials": "ПВ",
+    "color": "#dc2626",
+    "tag": "pro",
+    "uses": "177K",
+    "pitch": 0.45,
+    "locked": true
+  },
+  {
+    "id": "vip08",
+    "name": "Всемогущий",
+    "cat": "vip",
+    "initials": "ВС",
+    "color": "#a855f7",
+    "tag": "pro",
+    "uses": "114K",
+    "pitch": 0.49,
+    "locked": true
+  },
+  {
+    "id": "vip09",
+    "name": "Властелин",
+    "cat": "vip",
+    "initials": "ВЛ",
+    "color": "#f5a623",
+    "tag": "pro",
+    "uses": "5.7M",
+    "pitch": 0.69,
+    "locked": true
+  },
+  {
+    "id": "vip10",
+    "name": "Титан",
+    "cat": "vip",
+    "initials": "ТТ",
+    "color": "#ec4899",
+    "tag": "pro",
+    "uses": "1.9M",
+    "pitch": 0.51,
+    "locked": true
+  },
+  {
+    "id": "vip11",
+    "name": "Колосс",
+    "cat": "vip",
+    "initials": "КЛ",
+    "color": "#facc15",
+    "tag": "pro",
+    "uses": "6.5M",
+    "pitch": 0.63,
+    "locked": true
+  }
 ];
 
 const TEMPLATES = [
@@ -852,23 +1999,112 @@ const TEMPLATES = [
   'Всем привет! Это ваш любимый стример, ловите новый видос!',
   'Я тебя люблю, мам, прости что редко звоню!',
   'Уважаемый, ваша посылка ожидает вас. Заберите, пожалуйста.',
-  'Ало, этоpolyция? Тут сосед опять шумит, приезжайте срочно!',
+  'Ало, это полиция? Тут сосед опять шумит, приезжайте срочно!',
   'Чел, ты просто гений, я серьёзно. Без тебя бы не справился.',
-  'Это сообщение самоуничтожится через 5 секунд... шутка, не удалится.'
+  'Это сообщение самоуничтожится через 5 секунд... шутка, не удалится.',
+  'Бабуля, я получил стипендию! Иду за тортом, жди!',
+  'Уважаемые пассажиры, наш поезд опаздывает на 3 часа. Извините.',
 ];
 
 const EMOTIONS = ['Хайп','Спокойствие','Злость','Смешливый','Грусть','Шёпот','Крик'];
 const SPEEDS = ['0.5×','0.75×','1.0×','1.25×','1.5×','2.0×'];
 
 const HIST_SEED = [
-  { v: VOICES[0], text:'Братан, я тут новый блог запускаю...', time:'5 мин назад', dur:7 },
-  { v: VOICES[4], text:'Эээ, внучок, ить сюда, поговорим...', time:'2 ч назад', dur:12 },
-  { v: VOICES[1], text:'Слышь, ты мне долг вернёшь или как...', time:'вчера', dur:9 },
-  { v: VOICES[20], text:'Привет, человек. Я нейросеть...', time:'вчера', dur:15 },
+  { v: null, text:'Братан, я тут новый блог запускаю...', time:'5 мин назад', dur:7 },
+  { v: null, text:'Эээ, внучок, ить сюда, поговорим...', time:'2 ч назад', dur:12 },
+  { v: null, text:'Слышь, ты мне долг вернёшь или как...', time:'вчера', dur:9 },
+  { v: null, text:'Привет, человек. Я нейросеть...', time:'вчера', dur:15 },
 ];
 
+/* ===== TTS ENGINE STUB =====
+ * This is a mock TTS engine. In production it will call:
+ *   - ElevenLabs API (premium quality, English-heavy)
+ *   - Silero TTS (open-source, Russian-strong)
+ *   - MiniMax TTS (balanced, multilingual)
+ * The interface stays the same: generate(text, voice, opts) → { audio_url, duration, engine }
+ */
+const TTS_ENGINE = {
+  name: 'DEMO',
+  isMock: true,
+  backends: ['elevenlabs', 'silero', 'minimax'],  // planned providers
+
+  async generate(text, voice, opts = {}) {
+    // MOCK: simulate network + processing latency
+    const latency = 1500 + Math.random() * 1000;
+    await new Promise(r => setTimeout(r, latency));
+
+    // Estimate duration from text length and speed
+    const speed = opts.speed || 1.0;
+    const baseDur = Math.max(3, Math.min(30, Math.round(text.length / 12)));
+    const duration = baseDur / speed;
+
+    // Generate deterministic waveform seed (same voice+text → same wave)
+    const seed = voice.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0)
+               + text.slice(0,20).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+
+    return {
+      audio_url: null,        // null = mock
+      duration,
+      engine: this.name,
+      mock: true,
+      seed,
+      voice_id: voice.id,
+      emotion: opts.emotion || 'Хайп',
+      speed,
+      created_at: Date.now(),
+    };
+  },
+
+  preview(voice) {
+    // Quick preview: 1.5s blip
+    return this.generate('Привет, это голос ' + voice.name, voice, { speed: 1.0 });
+  },
+
+  // Future: switch backend at runtime
+  setBackend(name) {
+    if (this.backends.includes(name)) {
+      this.name = name.toUpperCase();
+      this.isMock = false;
+      console.log('[TTS] Switched to', name);
+    } else {
+      console.warn('[TTS] Unknown backend', name);
+    }
+  },
+};
+
+/* ===== TELEGRAM STARS (XTR) PAYMENTS — prepared but disabled =====
+ * When ready to enable PRO:
+ *   1. Send invoice via bot.sendInvoice with currency=XTR
+ *   2. Use tg.openInvoice(url) on client
+ *   3. Handle tg.onEvent('invoiceClosed', cb)
+ *
+ * Bot-side stub (server.js when ready):
+ *   bot.sendInvoice(chatId, {
+ *     title: 'NeuroYap PRO — 1 месяц',
+ *     description: 'Безлимитная генерация · 124 голоса · без очереди',
+ *     payload: 'pro_monthly',
+ *     currency: 'XTR',
+ *     prices: [{ label: 'PRO 1 мес', amount: 299 }],
+ *     provider_token: '',  // empty for XTR
+ *   });
+ */
+const PRO_PLANS = [
+  { id: 'pro_month',   price: 299, label: '1 месяц',   popular: false, disabled: true },
+  { id: 'pro_quarter', price: 749, label: '3 месяца',  popular: true,  disabled: true },
+  { id: 'pro_year',    price: 2490, label: '12 месяцев', popular: false, disabled: true },
+];
+
+async function buyPro(planId) {
+  haptic('warning');
+  toast('⭐ PRO через Telegram Stars — скоро');
+  // When enabled:
+  //   const url = await fetch('/api/invoice', {method:'POST', body: JSON.stringify({planId})}).then(r=>r.json());
+  //   tg.openInvoice(url.invoice_url);
+  //   tg.onEvent('invoiceClosed', (e) => { ... });
+}
+
 let state = {
-  selected: VOICES[0],
+  selected: null,
   emoIdx: 0,
   spdIdx: 2,
   coins: 240,
@@ -878,50 +2114,71 @@ let state = {
   playSpeed: 1.0,
   loop: false,
   volume: 100,
-  favs: new Set(['hyp','ded','ani']),
+  favs: new Set(),
   catFilter: 'all',
   vSearch: '',
   totalGen: 12,
   totalSec: 84,
+  history: [],
 };
 
 const $ = id => document.getElementById(id);
-const catIcon = c => { const k = Object.entries(CATS).find(([,_])=>_.id===c); return k ? k[1].icon : ''; };
 
-/* ====== RENDER CHIPS ====== */
-function renderChips(target, filter){
+function initDefaultVoice() {
+  if (VOICES.length && !state.selected) state.selected = VOICES[0];
+  // Backfill history seed voices
+  if (HIST_SEED[0] && !HIST_SEED[0].v) {
+    HIST_SEED[0].v = VOICES.find(v=>v.name==='Хайпстрим') || VOICES[0];
+    HIST_SEED[1].v = VOICES.find(v=>v.name==='Мемный Дед') || VOICES[1];
+    HIST_SEED[2].v = VOICES.find(v=>v.name==='Гопник Витя') || VOICES[2];
+    HIST_SEED[3].v = VOICES.find(v=>v.name==='Нейродевочка') || VOICES[3];
+  }
+  // Default favs
+  if (state.favs.size === 0) {
+    ['Хайпстрим','Мемный Дед','Анимешница'].forEach(n => {
+      const v = VOICES.find(x=>x.name===n);
+      if (v) state.favs.add(v.id);
+    });
+  }
+}
+
+/* ===== RENDER CHIPS ===== */
+function renderChips(target){
   const el = $(target);
+  const counts = {};
+  CATS.forEach(c => { counts[c.id] = c.id==='all' ? VOICES.length : VOICES.filter(v=>v.cat===c.id).length; });
   el.innerHTML = CATS.map(c => `
     <div class="chip ${state.catFilter===c.id?'active':''}" data-cat="${c.id}">
-      ${c.icon}${c.name}
+      ${c.icon}${c.name}<span class="count">${counts[c.id]}</span>
     </div>
   `).join('');
   el.querySelectorAll('.chip').forEach(ch => {
     ch.onclick = () => {
+      haptic('selection');
       state.catFilter = ch.dataset.cat;
-      renderChips(target, filter);
+      renderChips(target);
       if(target==='genChips') renderVoicesRow();
       else renderVoicesGrid();
     };
   });
 }
 
-/* ====== RENDER VOICES ROW (gen view) ====== */
+/* ===== RENDER VOICES ROW (gen view) ===== */
 function renderVoicesRow(){
   const row = $('voicesRow');
   let list = state.catFilter==='all' ? VOICES : VOICES.filter(v=>v.cat===state.catFilter);
-  row.innerHTML = list.map(v => voiceCard(v)).join('');
+  row.innerHTML = list.slice(0, 18).map(v => voiceCard(v)).join('');
   bindCards(row);
 }
 
-/* ====== RENDER VOICES GRID ====== */
+/* ===== RENDER VOICES GRID ===== */
 function renderVoicesGrid(){
   const grid = $('voicesGrid');
   let list = VOICES;
   if(state.catFilter !== 'all') list = list.filter(v=>v.cat===state.catFilter);
   if(state.vSearch){
     const q = state.vSearch.toLowerCase();
-    list = list.filter(v => v.name.toLowerCase().includes(q) || v.cat.includes(q));
+    list = list.filter(v => v.name.toLowerCase().includes(q) || CATS.find(c=>c.id===v.cat).name.toLowerCase().includes(q));
   }
   if(list.length === 0){
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1;"><div class="empty-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><b>Ничего не найдено</b><small>Попробуй другой запрос</small></div>`;
@@ -938,14 +2195,14 @@ function voiceCard(v){
   const tagCls = v.tag==='top'?'':v.tag==='hot'?'hot':v.tag==='new'?'new':v.tag==='pro'?'pro':'';
   const tagLbl = v.tag==='top'?'ТОП':v.tag==='hot'?'ОГОНЬ':v.tag==='new'?'NEW':v.tag==='pro'?'PRO':'';
   return `
-    <div class="vcard ${state.selected.id===v.id?'active':''} ${locked?'locked':''}" data-id="${v.id}">
+    <div class="vcard ${state.selected && state.selected.id===v.id?'active':''} ${locked?'locked':''}" data-id="${v.id}">
       ${isFav ? `<div class="vcard-fav on" data-fav="${v.id}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4 4.5 8C19 16.5 12 21 12 21Z"/></svg></div>`
               : `<div class="vcard-fav" data-fav="${v.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4 4.5 8C19 16.5 12 21 12 21Z"/></svg></div>`}
       ${locked ? `<div class="vlock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>`
-              : `<div class="vpreview"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3Z"/></svg></div>`}
+              : `<div class="vpreview" data-preview="${v.id}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3Z"/></svg></div>`}
       <div class="vavatar" style="background:linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})">${v.initials}</div>
       <div class="vname">${v.name}</div>
-      <div class="vmeta">${catObj.icon}<span class="cat-ico">${catObj.icon}</span>${v.uses}</div>
+      <div class="vmeta"><span class="cat-ico">${catObj.icon}</span>${v.uses}</div>
       ${tagLbl ? `<div style="text-align:center;"><span class="vtag ${tagCls}">${tagLbl}</span></div>` : '<div style="height:18px"></div>'}
     </div>
   `;
@@ -953,28 +2210,37 @@ function voiceCard(v){
 
 function bindCards(container){
   container.querySelectorAll('.vcard').forEach(el => {
-    el.onclick = (e) => {
+    el.onclick = async (e) => {
       // fav click
       if(e.target.closest('[data-fav]')){
+        e.stopPropagation();
         const id = e.target.closest('[data-fav]').dataset.fav;
         if(state.favs.has(id)){ state.favs.delete(id); toast('Убрали из избранного'); }
-        else { state.favs.add(id); toast('Добавили в избранное ❤'); }
+        else { state.favs.add(id); toast('Добавили в избранное ❤'); haptic('success'); }
         renderVoicesRow(); renderVoicesGrid(); updateStats();
         return;
       }
+      // preview click (on non-locked)
+      if(e.target.closest('[data-preview]')){
+        e.stopPropagation();
+        const id = e.target.closest('[data-preview]').dataset.preview;
+        const v = VOICES.find(x=>x.id===id);
+        if(v){ toast('▶ Превью: ' + v.name); haptic('light'); await TTS_ENGINE.preview(v); }
+        return;
+      }
       const v = VOICES.find(x=>x.id===el.dataset.id);
-      if(v.locked){ toast('🔒 Голос только для PRO'); return; }
+      if(v.locked){ toast('🔒 Голос только для PRO'); haptic('warning'); return; }
+      haptic('selection');
       state.selected = v;
       renderVoicesRow(); renderVoicesGrid();
       if(container.id==='voicesGrid'){
-        // small toast on grid selection, no auto-jump
         toast('Выбран: ' + v.name);
       }
     };
   });
 }
 
-/* ====== RENDER HISTORY ====== */
+/* ===== RENDER HISTORY ===== */
 function renderHist(){
   const hl = $('histList');
   if(HIST_SEED.length === 0){
@@ -982,6 +2248,7 @@ function renderHist(){
     return;
   }
   hl.innerHTML = HIST_SEED.map(h => {
+    if(!h.v) return '';
     const c = CATS.find(x=>x.id===h.v.cat);
     return `
     <div class="hist-item">
@@ -996,18 +2263,20 @@ function renderHist(){
       </div>
     </div>`;
   }).join('');
-  hl.querySelectorAll('.hist-item').forEach(el => el.onclick = () => toast('Воспроизведение...'));
+  hl.querySelectorAll('.hist-item').forEach(el => {
+    el.onclick = () => { haptic('light'); toast('Воспроизведение...'); };
+  });
 }
 
-/* ====== WAVEFORM (per-voice pattern) ====== */
+/* ===== WAVEFORM (per-voice + per-text pattern) ===== */
 const wave = $('wave');
+let waveSeed = 0;
 function buildWave(){
-  const v = state.selected;
+  const v = state.selected; if (!v) return;
   let html = '';
   for(let i=0;i<60;i++){
-    // deterministic pattern per voice based on pitch + id
-    const seed = v.id.charCodeAt(0) + v.id.charCodeAt(1) + i;
-    const base = Math.abs(Math.sin(i*0.35 + v.pitch*2)) * 0.7 + 0.2;
+    const seed = v.id.charCodeAt(0) + v.id.charCodeAt(1) + i + waveSeed;
+    const base = Math.abs(Math.sin(i*0.35 + v.pitch*2 + waveSeed*0.1)) * 0.7 + 0.2;
     const noise = Math.abs(Math.sin(seed*0.7)) * 0.3;
     const h = (base + noise) * 100;
     html += `<div class="bar" data-i="${i}" style="height:${Math.min(100,Math.max(8,h))}%"></div>`;
@@ -1022,10 +2291,11 @@ function updateWavePlayed(){
   bars.forEach((b,i) => b.classList.toggle('played', i < played));
 }
 
-/* ====== SCRUB WAVEFORM ====== */
+/* ===== SCRUB WAVEFORM ===== */
 const waveWrap = $('waveWrap');
 const waveTip = $('waveTip');
 waveWrap.addEventListener('click', (e) => {
+  haptic('light');
   const rect = waveWrap.getBoundingClientRect();
   const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
   const ratio = x / rect.width;
@@ -1047,7 +2317,7 @@ waveWrap.addEventListener('mousemove', (e) => {
 
 function fmt(s){ return `0:${String(Math.floor(s)).padStart(2,'0')}`; }
 
-/* ====== HELPERS ====== */
+/* ===== HELPERS ===== */
 function shade(hex, p){
   hex = hex.replace('#','');
   if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
@@ -1072,10 +2342,12 @@ function updateStats(){
   $('stFav').textContent = state.favs.size;
   $('stMin').textContent = (state.totalSec/60).toFixed(1);
   $('vCount').textContent = VOICES.length;
+  $('engineName').textContent = TTS_ENGINE.name;
 }
 
-/* ====== TABS ====== */
+/* ===== TABS ===== */
 function switchTab(name){
+  haptic('light');
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.dataset.view===name));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.nav===name));
@@ -1084,14 +2356,14 @@ function switchTab(name){
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => switchTab(t.dataset.tab));
 document.querySelectorAll('.nav-item').forEach(n => {
   if(n.dataset.nav) n.onclick = () => {
-    if(n.dataset.nav==='profile'){ toast('Профиль — скоро 🚀'); return; }
+    if(n.dataset.nav==='profile'){ toast('Профиль — скоро 🚀'); haptic('warning'); return; }
     switchTab(n.dataset.nav);
   };
 });
-document.querySelectorAll('[data-jump]').forEach(el => el.onclick = () => switchTab(el.dataset.jump));
-$('fabBtn').onclick = () => { switchTab('gen'); $('textInput').focus(); };
+document.querySelectorAll('[data-jump]').forEach(el => el.onclick = () => { haptic('light'); switchTab(el.dataset.jump); });
+$('fabBtn').onclick = () => { haptic('medium'); switchTab('gen'); $('textInput').focus(); };
 
-/* ====== TEXT INPUT ====== */
+/* ===== TEXT INPUT ===== */
 const ti = $('textInput');
 const cc = $('charCount');
 ti.addEventListener('input', () => {
@@ -1099,81 +2371,91 @@ ti.addEventListener('input', () => {
   cc.textContent = `${l} / 500`;
   cc.classList.toggle('warn', l > 450);
 });
-$('clearBtn').onclick = () => { ti.value=''; ti.dispatchEvent(new Event('input')); };
+$('clearBtn').onclick = () => { ti.value=''; ti.dispatchEvent(new Event('input')); haptic('light'); };
 $('tplBtn').onclick = () => {
   ti.value = TEMPLATES[Math.floor(Math.random()*TEMPLATES.length)];
   ti.dispatchEvent(new Event('input'));
   toast('Шаблон подставлен');
+  haptic('light');
 };
 $('rndText').onclick = () => {
   ti.value = TEMPLATES[Math.floor(Math.random()*TEMPLATES.length)];
   ti.dispatchEvent(new Event('input'));
+  haptic('light');
 };
 
-/* search voices */
 $('vSearch').addEventListener('input', e => { state.vSearch = e.target.value; renderVoicesGrid(); });
 
-/* ====== EMOTION / SPEED ====== */
+/* ===== EMOTION / SPEED ===== */
 $('emoCycle').onclick = () => {
+  haptic('selection');
   state.emoIdx = (state.emoIdx+1) % EMOTIONS.length;
   $('emoLbl').textContent = EMOTIONS[state.emoIdx];
 };
 $('spdCycle').onclick = () => {
+  haptic('selection');
   state.spdIdx = (state.spdIdx+1) % SPEEDS.length;
   $('spdLbl').textContent = SPEEDS[state.spdIdx];
 };
 
-/* ====== GENERATE ====== */
+/* ===== GENERATE ===== */
 const genBtn = $('genBtn');
 const result = $('result');
 
-genBtn.onclick = () => {
-  if(!ti.value.trim()){ toast('Сначала напиши текст!'); ti.focus(); return; }
-  if(state.coins < 5){ toast('Не хватает yap-коинов'); return; }
+genBtn.onclick = async () => {
+  if(!ti.value.trim()){ toast('Сначала напиши текст!'); ti.focus(); haptic('error'); return; }
+  if(state.coins < 5){ toast('Не хватает yap-коинов'); haptic('error'); return; }
 
   genBtn.classList.add('loading');
   result.classList.remove('show');
+  haptic('medium');
 
-  setTimeout(() => {
-    genBtn.classList.remove('loading');
-    state.coins -= 5;
-    state.totalGen++;
-    $('coins').textContent = state.coins;
+  const v = state.selected;
+  const text = ti.value.trim();
+  const opts = { emotion: EMOTIONS[state.emoIdx], speed: parseFloat(SPEEDS[state.spdIdx]) };
 
-    const v = state.selected;
-    $('rAv').textContent = v.initials;
-    $('rAv').style.background = `linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})`;
-    $('rName').textContent = v.name;
-    const txt = ti.value.trim();
-    $('rTxt').textContent = '«' + (txt.length>48 ? txt.slice(0,48)+'…' : txt) + '»';
+  // Call TTS engine (mock for now)
+  const audio = await TTS_ENGINE.generate(text, v, opts);
 
-    const dur = Math.max(4, Math.min(30, Math.round(txt.length / 12)));
-    state.totalSec += dur;
-    $('rDur').textContent = `0:${String(dur).padStart(2,'0')}`;
-    result.dataset.dur = dur;
+  genBtn.classList.remove('loading');
+  state.coins -= 5;
+  state.totalGen++;
+  $('coins').textContent = state.coins;
 
-    buildWave();
-    state.progress = 0;
-    updateWavePlayed();
-    $('progFill').style.width = '0%';
-    $('timeLbl').textContent = `0:00 / ${fmt(dur)}`;
+  waveSeed = audio.seed;
 
-    result.classList.add('show');
+  $('rAv').textContent = v.initials;
+  $('rAv').style.background = `linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})`;
+  $('rName').textContent = v.name;
+  $('rTxt').textContent = '«' + (text.length>48 ? text.slice(0,48)+'…' : text) + '»';
 
-    HIST_SEED.unshift({
-      v, text: txt.length>40 ? txt.slice(0,40)+'…' : txt,
-      time: 'только что', dur
-    });
-    if(HIST_SEED.length > 8) HIST_SEED.pop();
-    renderHist();
-    updateStats();
+  const dur = Math.round(audio.duration);
+  state.totalSec += dur;
+  $('rDur').textContent = `0:${String(dur).padStart(2,'0')}`;
+  result.dataset.dur = dur;
 
-    toast('Голос сгенерирован! 🔥');
-    setTimeout(()=> togglePlay(true), 400);
-  }, 1800);
+  buildWave();
+  state.progress = 0;
+  updateWavePlayed();
+  $('progFill').style.width = '0%';
+  $('timeLbl').textContent = `0:00 / ${fmt(dur)}`;
+
+  result.classList.add('show');
+
+  HIST_SEED.unshift({
+    v, text: text.length>40 ? text.slice(0,40)+'…' : text,
+    time: 'только что', dur
+  });
+  if(HIST_SEED.length > 12) HIST_SEED.pop();
+  renderHist();
+  updateStats();
+
+  haptic('success');
+  toast(audio.mock ? 'Голос сгенерирован (DEMO) 🔥' : 'Голос сгенерирован! 🔥');
+  setTimeout(()=> togglePlay(true), 400);
 };
 
-/* ====== PLAYER ====== */
+/* ===== PLAYER ===== */
 const playBtn = $('playBtn');
 const playIco = $('playIco');
 const progFill = $('progFill');
@@ -1213,10 +2495,11 @@ function startPlay(){
 }
 function stopPlay(){ clearInterval(state.playTimer); }
 
-playBtn.onclick = () => togglePlay();
+playBtn.onclick = () => { haptic('light'); togglePlay(); };
 
 /* player controls */
 $('spdBtn').onclick = () => {
+  haptic('selection');
   const idx = (SPEEDS.indexOf($('pcSpd').textContent) + 1) % SPEEDS.length;
   state.playSpeed = parseFloat(SPEEDS[idx]);
   $('pcSpd').textContent = SPEEDS[idx];
@@ -1224,11 +2507,13 @@ $('spdBtn').onclick = () => {
   if(state.playing){ startPlay(); }
 };
 $('loopBtn').onclick = () => {
+  haptic('light');
   state.loop = !state.loop;
   $('loopBtn').classList.toggle('active', state.loop);
   toast(state.loop ? 'Луп включён 🔁' : 'Луп выключен');
 };
 $('volBtn').onclick = () => {
+  haptic('selection');
   const levels = [100, 75, 50, 25, 0];
   const idx = (levels.indexOf(state.volume) + 1) % levels.length;
   state.volume = levels[idx];
@@ -1236,14 +2521,42 @@ $('volBtn').onclick = () => {
   $('volBtn').classList.toggle('active', state.volume !== 100);
 };
 
-/* ====== RESULT ACTIONS ====== */
-$('sendBtn').onclick = () => toast('Отправляем в Telegram-чат...');
-$('dlBtn').onclick = () => toast('Аудио сохраняется (.mp3)');
-$('shareBtn').onclick = () => toast('Поделиться голосовым');
-$('premBtn').onclick = () => toast('Открываем PRO-подписку...');
-$('clearHist').onclick = () => { HIST_SEED.length = 0; renderHist(); toast('История очищена'); };
+/* ===== RESULT ACTIONS ===== */
+$('sendBtn').onclick = () => {
+  haptic('medium');
+  if (tg) {
+    // Use Telegram's sendData to send back to bot
+    const payload = JSON.stringify({ action: 'send_voice', voice_id: state.selected.id, text: ti.value });
+    if (tg.sendData) { tg.sendData(payload); return; }
+  }
+  toast('Отправляем в Telegram-чат...');
+};
+$('dlBtn').onclick = () => { haptic('light'); toast('Аудио сохраняется (.mp3)'); };
+$('shareBtn').onclick = () => {
+  haptic('light');
+  if (tg && tg.switchInlineQuery) {
+    tg.switchInlineQuery('🎙 Сгенерировано в NeuroYap', ['users','groups','channels']);
+    return;
+  }
+  toast('Поделиться голосовым');
+};
+$('premBtn').onclick = () => buyPro('pro_quarter');
+$('clearHist').onclick = () => {
+  haptic('warning');
+  HIST_SEED.length = 0;
+  renderHist();
+  toast('История очищена');
+};
+$('balanceBtn').onclick = () => { haptic('light'); toast(`У тебя ${state.coins} yap-коинов`); };
 
-/* ====== INIT ====== */
+/* ===== TG MainButton setup (hidden by default, shown contextually) ===== */
+if (tg && tg.MainButton) {
+  tg.MainButton.setText('🎙 Открыть генерацию');
+  // Don't show by default — user is already on generate view
+}
+
+/* ===== INIT ===== */
+initDefaultVoice();
 renderChips('genChips');
 renderChips('voicesChips');
 renderVoicesRow();

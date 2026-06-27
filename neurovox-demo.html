@@ -1,0 +1,957 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<meta name="theme-color" content="#0a0a0f" />
+<title>NeuroVox — AI-озвучка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin:0; padding:0; }
+  :root{
+    --bg:#0a0a0f;
+    --bg-2:#13131c;
+    --surface:rgba(255,255,255,0.045);
+    --surface-2:rgba(255,255,255,0.07);
+    --stroke:rgba(255,255,255,0.08);
+    --stroke-2:rgba(255,255,255,0.14);
+    --text:#fff;
+    --muted:#8b8b9a;
+    --muted-2:#5a5a68;
+    --violet:#8b5cf6;
+    --pink:#ec4899;
+    --cyan:#22d3ee;
+    --lime:#a3e635;
+    --grad: linear-gradient(135deg,#8b5cf6 0%,#ec4899 100%);
+    --grad-cyan: linear-gradient(135deg,#22d3ee 0%,#8b5cf6 100%);
+    --r-lg: 22px;
+    --r-md: 16px;
+    --r-sm: 12px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html,body{
+    height:100%;
+    background:#000;
+    color:var(--text);
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  body{
+    display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(1200px 800px at 50% -10%, rgba(139,92,246,0.18), transparent 60%),
+      radial-gradient(900px 600px at 100% 100%, rgba(236,72,153,0.10), transparent 60%),
+      #000;
+  }
+
+  /* ====== PHONE FRAME ====== */
+  .phone{
+    position:relative;
+    width:min(430px, 100vw);
+    height:min(932px, 100vh);
+    background:var(--bg);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  @media (max-width: 430px){
+    .phone{ width:100vw; height:100vh; box-shadow:none; }
+  }
+
+  /* ====== AMBIENT BACKGROUND ====== */
+  .ambient{ position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .blob{
+    position:absolute; border-radius:50%; filter:blur(60px); opacity:.35;
+    animation: float 16s ease-in-out infinite;
+  }
+  .blob.v{ width:340px; height:340px; background:#8b5cf6; top:-80px; left:-80px; }
+  .blob.p{ width:300px; height:300px; background:#ec4899; bottom:-60px; right:-80px; animation-delay:-6s; }
+  .blob.c{ width:240px; height:240px; background:#22d3ee; top:40%; right:-100px; opacity:.18; animation-delay:-3s; }
+  @keyframes float{
+    0%,100%{ transform: translate(0,0) scale(1); }
+    50%{ transform: translate(20px,-30px) scale(1.08); }
+  }
+
+  /* ====== TOP BAR ====== */
+  .topbar{
+    position:relative; z-index:5;
+    padding: calc(12px + var(--safe-top)) 16px 10px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .logo{
+    width:38px; height:38px; border-radius:12px;
+    background:var(--grad);
+    display:grid; place-items:center;
+    box-shadow: 0 8px 24px rgba(139,92,246,0.45), inset 0 0 0 1px rgba(255,255,255,0.18);
+    position:relative;
+  }
+  .logo svg{ width:20px; height:20px; }
+  .brand-name{
+    font-family:'Unbounded', sans-serif;
+    font-weight:800; font-size:18px; letter-spacing:-0.02em;
+    line-height:1;
+  }
+  .brand-name span{
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .brand-tag{ font-size:10px; color:var(--muted); margin-top:3px; letter-spacing:0.06em; text-transform:uppercase; }
+
+  .balance{
+    display:flex; align-items:center; gap:7px;
+    background:var(--surface); border:1px solid var(--stroke);
+    padding:7px 11px 7px 8px; border-radius:999px;
+    font-weight:700; font-size:13px;
+  }
+  .coin{
+    width:20px; height:20px; border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, #ffe27a, #f5a623);
+    box-shadow: 0 0 12px rgba(245,166,35,0.6), inset 0 0 0 1px rgba(255,255,255,0.3);
+    display:grid; place-items:center; font-size:11px; font-weight:800; color:#7a4a00;
+  }
+
+  /* ====== TABS ====== */
+  .tabs{
+    position:relative; z-index:5;
+    margin: 6px 16px 0;
+    display:flex; background:var(--surface); border:1px solid var(--stroke);
+    padding:4px; border-radius:14px; gap:2px;
+  }
+  .tab{
+    flex:1; text-align:center; padding:9px 0;
+    font-size:13px; font-weight:600; color:var(--muted);
+    border-radius:10px; cursor:pointer; transition:.2s;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .tab svg{ width:14px; height:14px; }
+  .tab.active{ background:var(--surface-2); color:#fff; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+
+  /* ====== SCROLL AREA ====== */
+  .scroll{
+    position:relative; z-index:2;
+    flex:1; overflow-y:auto; overflow-x:hidden;
+    padding: 14px 0 110px;
+    scrollbar-width:none;
+  }
+  .scroll::-webkit-scrollbar{ display:none; }
+  .view{ display:none; padding: 0 16px; }
+  .view.active{ display:block; animation: fadein .3s ease; }
+  @keyframes fadein{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none; } }
+
+  /* ====== SECTION HEADER ====== */
+  .sec-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin: 4px 0 12px;
+  }
+  .sec-title{ font-size:15px; font-weight:700; letter-spacing:-0.01em; }
+  .sec-link{ font-size:12px; color:var(--violet); font-weight:600; cursor:pointer; }
+
+  /* ====== VOICE CARDS (horizontal) ====== */
+  .voices-row{
+    display:flex; gap:11px; overflow-x:auto;
+    margin: 0 -16px; padding: 4px 16px 8px;
+    scrollbar-width:none;
+  }
+  .voices-row::-webkit-scrollbar{ display:none; }
+  .vcard{
+    flex:0 0 auto; width:108px;
+    background:var(--surface); border:1px solid var(--stroke);
+    border-radius:var(--r-md); padding:11px 10px;
+    cursor:pointer; position:relative; transition:.2s;
+    overflow:hidden;
+  }
+  .vcard::before{
+    content:''; position:absolute; inset:0;
+    background: var(--grad); opacity:0; transition:.25s; border-radius:var(--r-md);
+    z-index:-1;
+  }
+  .vcard.active{
+    border-color:transparent;
+    box-shadow: 0 0 0 2px var(--violet), 0 8px 24px rgba(139,92,246,0.35);
+    transform: translateY(-2px);
+  }
+  .vcard.active::before{ opacity:1; }
+  .vcard.active .vname, .vcard.active .vmeta{ color:#fff; }
+  .vcard.active .vtag{ background:rgba(255,255,255,0.25); color:#fff; }
+
+  .vavatar{
+    width:56px; height:56px; border-radius:50%;
+    margin: 0 auto 8px;
+    display:grid; place-items:center;
+    font-family:'Unbounded', sans-serif; font-weight:800; font-size:18px; color:#fff;
+    position:relative;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15);
+  }
+  .vavatar::after{
+    content:''; position:absolute; right:-2px; bottom:-2px;
+    width:16px; height:16px; border-radius:50%;
+    background: var(--lime); border:2.5px solid var(--bg);
+  }
+  .vcard.active .vavatar::after{ border-color:#8b5cf6; }
+  .vname{ font-size:12.5px; font-weight:700; text-align:center; line-height:1.2; }
+  .vmeta{ font-size:10px; color:var(--muted); text-align:center; margin-top:3px; }
+  .vtag{
+    display:inline-block; margin: 6px auto 0; padding:2px 7px;
+    background: rgba(139,92,246,0.18); color:var(--violet);
+    font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
+    border-radius:5px;
+  }
+
+  /* ====== TEXT INPUT ====== */
+  .input-wrap{
+    background:var(--surface); border:1px solid var(--stroke);
+    border-radius:var(--r-lg); padding:14px 14px 12px;
+    transition:.2s;
+  }
+  .input-wrap:focus-within{
+    border-color: var(--violet);
+    box-shadow: 0 0 0 3px rgba(139,92,246,0.18);
+  }
+  .input-wrap textarea{
+    width:100%; min-height:96px; resize:none;
+    background:transparent; border:none; outline:none;
+    color:#fff; font-family:inherit; font-size:15px; line-height:1.45;
+  }
+  .input-wrap textarea::placeholder{ color:var(--muted-2); }
+  .input-meta{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:8px; padding-top:10px; border-top:1px solid var(--stroke);
+  }
+  .input-tools{ display:flex; gap:6px; }
+  .tool-btn{
+    width:32px; height:32px; border-radius:9px;
+    background:var(--surface-2); border:1px solid var(--stroke);
+    display:grid; place-items:center; cursor:pointer;
+    color:var(--muted); transition:.2s;
+  }
+  .tool-btn:hover{ color:#fff; background:rgba(255,255,255,0.1); }
+  .tool-btn svg{ width:15px; height:15px; }
+  .char-count{ font-size:11px; color:var(--muted); font-weight:600; }
+  .char-count.warn{ color: var(--pink); }
+
+  /* ====== OPTIONS ROW ====== */
+  .opts{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;
+  }
+  .opt{
+    background:var(--surface); border:1px solid var(--stroke);
+    border-radius:var(--r-md); padding:10px 12px;
+    display:flex; align-items:center; justify-content:space-between;
+    cursor:pointer;
+  }
+  .opt-l{ display:flex; flex-direction:column; gap:2px; }
+  .opt-l small{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; font-weight:600; }
+  .opt-l b{ font-size:13px; font-weight:700; }
+  .opt .pill{
+    font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px;
+    background:rgba(34,211,238,0.16); color:var(--cyan);
+  }
+
+  /* ====== GENERATE BUTTON ====== */
+  .gen-btn{
+    width:100%; margin-top:14px;
+    padding:16px; border:none; border-radius:var(--r-lg);
+    background:var(--grad);
+    color:#fff; font-family:inherit; font-weight:800; font-size:16px;
+    cursor:pointer; position:relative; overflow:hidden;
+    box-shadow: 0 12px 30px rgba(139,92,246,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+    transition: transform .15s;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+  }
+  .gen-btn:active{ transform: scale(0.98); }
+  .gen-btn svg{ width:18px; height:18px; }
+  .gen-btn::after{
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: shimmer 2.5s infinite;
+  }
+  @keyframes shimmer{ 100%{ transform: translateX(100%);} }
+  .gen-btn.loading{ pointer-events:none; }
+  .gen-btn.loading .lbl{ opacity:0; }
+  .gen-btn.loading::before{
+    content:''; position:absolute; width:24px; height:24px;
+    border:3px solid rgba(255,255,255,0.3); border-top-color:#fff;
+    border-radius:50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin{ 100%{ transform: rotate(360deg); } }
+
+  .gen-cost{
+    text-align:center; font-size:11px; color:var(--muted); margin-top:8px;
+    display:flex; align-items:center; justify-content:center; gap:5px;
+  }
+
+  /* ====== RESULT PLAYER ====== */
+  .result{
+    margin-top:18px;
+    background: linear-gradient(180deg, rgba(139,92,246,0.10), rgba(236,72,153,0.06));
+    border:1px solid var(--stroke-2);
+    border-radius:var(--r-lg); padding:14px;
+    display:none;
+  }
+  .result.show{ display:block; animation: pop .4s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes pop{ from{ opacity:0; transform:translateY(10px) scale(0.97);} to{ opacity:1; transform:none; } }
+
+  .result-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .result-av{
+    width:38px; height:38px; border-radius:50%;
+    display:grid; place-items:center; color:#fff; font-weight:800; font-size:14px;
+    font-family:'Unbounded', sans-serif;
+  }
+  .result-info{ flex:1; }
+  .result-info b{ font-size:13px; font-weight:700; display:block; }
+  .result-info small{ font-size:11px; color:var(--muted); }
+  .result-dur{
+    background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:6px;
+    font-size:10px; font-weight:700; color:var(--cyan);
+  }
+
+  .wave{
+    display:flex; align-items:center; gap:2px; height:36px; margin: 8px 0 12px;
+  }
+  .wave .bar{
+    flex:1; background:rgba(255,255,255,0.15); border-radius:2px;
+    min-height:4px; transition:.15s;
+  }
+  .wave.playing .bar{ background:var(--grad); animation: wv 1s ease-in-out infinite; }
+  .wave .bar:nth-child(odd){ animation-delay:-0.3s; }
+  .wave .bar:nth-child(3n){ animation-delay:-0.6s; }
+  @keyframes wv{
+    0%,100%{ transform: scaleY(0.4); }
+    50%{ transform: scaleY(1); }
+  }
+
+  .player-row{ display:flex; align-items:center; gap:10px; }
+  .play-btn{
+    width:42px; height:42px; border-radius:50%; border:none;
+    background:var(--grad); color:#fff; cursor:pointer;
+    display:grid; place-items:center; flex-shrink:0;
+    box-shadow: 0 6px 16px rgba(139,92,246,0.4);
+  }
+  .play-btn svg{ width:16px; height:16px; }
+  .progress{
+    flex:1; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; background:var(--grad); width:0; transition: width .2s linear;
+  }
+  .time{ font-size:10px; color:var(--muted); font-variant-numeric:tabular-nums; font-weight:600; }
+
+  .result-actions{ display:flex; gap:7px; margin-top:12px; }
+  .ra-btn{
+    flex:1; padding:9px 8px; border-radius:10px;
+    background:rgba(255,255,255,0.06); border:1px solid var(--stroke);
+    color:#fff; font-family:inherit; font-size:11.5px; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;
+    transition:.2s;
+  }
+  .ra-btn:hover{ background:rgba(255,255,255,0.12); }
+  .ra-btn svg{ width:13px; height:13px; }
+  .ra-btn.primary{
+    background: var(--grad-cyan); border-color:transparent;
+    box-shadow: 0 4px 12px rgba(34,211,238,0.3);
+  }
+
+  /* ====== HISTORY LIST ====== */
+  .hist-item{
+    display:flex; align-items:center; gap:11px;
+    padding:11px; background:var(--surface); border:1px solid var(--stroke);
+    border-radius:var(--r-md); margin-bottom:8px; cursor:pointer;
+  }
+  .hist-av{
+    width:40px; height:40px; border-radius:50%; flex-shrink:0;
+    display:grid; place-items:center; color:#fff; font-weight:800; font-size:13px;
+    font-family:'Unbounded', sans-serif;
+  }
+  .hist-info{ flex:1; min-width:0; }
+  .hist-info b{ font-size:13px; font-weight:700; display:block; }
+  .hist-info small{
+    font-size:11px; color:var(--muted); display:block;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;
+  }
+  .hist-meta{ display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+  .hist-time{ font-size:10px; color:var(--muted-2); }
+  .hist-play{
+    width:28px; height:28px; border-radius:50%;
+    background:var(--surface-2); border:1px solid var(--stroke);
+    display:grid; place-items:center; color:#fff;
+  }
+  .hist-play svg{ width:11px; height:11px; margin-left:1px; }
+
+  /* ====== PREMIUM BANNER ====== */
+  .premium{
+    margin: 4px 0 4px;
+    background: linear-gradient(135deg, rgba(245,166,35,0.16), rgba(236,72,153,0.10));
+    border:1px solid rgba(245,166,35,0.3);
+    border-radius:var(--r-lg); padding:14px;
+    display:flex; align-items:center; gap:12px;
+    position:relative; overflow:hidden;
+  }
+  .premium::before{
+    content:''; position:absolute; right:-30px; top:-30px;
+    width:100px; height:100px; border-radius:50%;
+    background: radial-gradient(circle, rgba(245,166,35,0.3), transparent 70%);
+  }
+  .prem-icon{
+    width:42px; height:42px; border-radius:12px;
+    background: linear-gradient(135deg, #f5a623, #ec4899);
+    display:grid; place-items:center; flex-shrink:0;
+    box-shadow: 0 6px 16px rgba(245,166,35,0.4);
+  }
+  .prem-icon svg{ width:22px; height:22px; }
+  .prem-text{ flex:1; }
+  .prem-text b{ font-size:13.5px; font-weight:800; display:block; }
+  .prem-text small{ font-size:11px; color:var(--muted); }
+  .prem-btn{
+    background:#fff; color:#000; border:none;
+    padding:8px 14px; border-radius:10px; font-weight:800; font-size:12px;
+    font-family:inherit; cursor:pointer; flex-shrink:0;
+  }
+
+  /* ====== BOTTOM NAV ====== */
+  .nav{
+    position:absolute; bottom:0; left:0; right:0; z-index:10;
+    padding: 10px 16px calc(10px + var(--safe-bottom));
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--stroke);
+    display:flex; justify-content:space-around;
+  }
+  .nav-item{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    color:var(--muted-2); cursor:pointer; padding:4px 12px; border-radius:10px;
+    font-size:10px; font-weight:600; transition:.2s;
+  }
+  .nav-item svg{ width:21px; height:21px; }
+  .nav-item.active{ color:#fff; }
+  .nav-item.active .nav-ico{
+    background: var(--grad);
+    color:#fff;
+  }
+  .nav-ico{
+    width:32px; height:32px; border-radius:10px;
+    display:grid; place-items:center;
+    transition:.2s;
+  }
+  .nav-fab{
+    width:48px; height:48px; border-radius:50%;
+    background: var(--grad); display:grid; place-items:center;
+    margin-top: -22px;
+    box-shadow: 0 8px 20px rgba(139,92,246,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+    cursor:pointer;
+  }
+  .nav-fab svg{ width:22px; height:22px; color:#fff; }
+
+  /* ====== TOAST ====== */
+  .toast{
+    position:absolute; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
+    background: rgba(20,20,30,0.95); backdrop-filter: blur(20px);
+    border:1px solid var(--stroke-2);
+    padding:11px 18px; border-radius:12px;
+    font-size:13px; font-weight:600; color:#fff;
+    z-index:50; opacity:0; pointer-events:none;
+    transition:.3s; display:flex; align-items:center; gap:8px;
+    white-space:nowrap;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast svg{ width:15px; height:15px; color: var(--lime); }
+
+  /* empty state for history */
+  .empty{
+    text-align:center; padding: 40px 20px; color: var(--muted);
+  }
+  .empty-ico{
+    width:64px; height:64px; border-radius:50%;
+    background: var(--surface); border:1px solid var(--stroke);
+    display:grid; place-items:center; margin: 0 auto 14px;
+  }
+  .empty-ico svg{ width:28px; height:28px; color: var(--muted-2); }
+  .empty b{ display:block; font-size:14px; color:#fff; margin-bottom:5px; }
+  .empty small{ font-size:12px; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="ambient">
+    <div class="blob v"></div>
+    <div class="blob p"></div>
+    <div class="blob c"></div>
+  </div>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h2l2-7 4 14 3-10 2 5h5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">Neuro<span>Vox</span></div>
+        <div class="brand-tag">AI Voice Engine</div>
+      </div>
+    </div>
+    <div class="balance">
+      <div class="coin">N</div>
+      <span id="coins">240</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" data-tab="gen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M21 12h-3M12 21v-3M3 12h3M5.6 5.6l2.1 2.1M18.4 5.6l-2.1 2.1M18.4 18.4l-2.1-2.1M5.6 18.4l2.1-2.1"/><circle cx="12" cy="12" r="3.5"/></svg>
+      Генерация
+    </div>
+    <div class="tab" data-tab="voices">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4Z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      Голоса
+    </div>
+    <div class="tab" data-tab="history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      История
+    </div>
+  </div>
+
+  <!-- SCROLL AREA -->
+  <div class="scroll">
+
+    <!-- ===== VIEW: GENERATE ===== -->
+    <div class="view active" data-view="gen">
+      <div class="sec-head">
+        <div class="sec-title">Выбери голос</div>
+        <div class="sec-link" data-jump="voices">Все 124 →</div>
+      </div>
+
+      <div class="voices-row" id="voicesRow"></div>
+
+      <div class="sec-head" style="margin-top:14px;">
+        <div class="sec-title">Что сказать?</div>
+      </div>
+
+      <div class="input-wrap">
+        <textarea id="textInput" maxlength="500" placeholder="Напиши текст... Например: «Братан, я тут новый блог запускаю, подпишись ок?»"></textarea>
+        <div class="input-meta">
+          <div class="input-tools">
+            <div class="tool-btn" title="Эмодзи">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+            </div>
+            <div class="tool-btn" title="Шаблоны" id="tplBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+            </div>
+            <div class="tool-btn" title="Очистить" id="clearBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+            </div>
+          </div>
+          <div class="char-count" id="charCount">0 / 500</div>
+        </div>
+      </div>
+
+      <div class="opts">
+        <div class="opt">
+          <div class="opt-l">
+            <small>Эмоция</small>
+            <b id="emoLbl">Хайп</b>
+          </div>
+          <div class="pill" id="emoCycle">сменить</div>
+        </div>
+        <div class="opt">
+          <div class="opt-l">
+            <small>Скорость</small>
+            <b id="spdLbl">1.0×</b>
+          </div>
+          <div class="pill" id="spdCycle">сменить</div>
+        </div>
+      </div>
+
+      <button class="gen-btn" id="genBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3Z"/></svg>
+        <span class="lbl">Сгенерировать голос</span>
+      </button>
+      <div class="gen-cost">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
+        Стоимость: 5 нейро-коинов · ~3 сек
+      </div>
+
+      <div class="result" id="result">
+        <div class="result-head">
+          <div class="result-av" id="rAv">Х</div>
+          <div class="result-info">
+            <b id="rName">Хайпстрим</b>
+            <small id="rTxt">«Братан, я тут новый блог...»</small>
+          </div>
+          <div class="result-dur" id="rDur">0:07</div>
+        </div>
+        <div class="wave" id="wave"></div>
+        <div class="player-row">
+          <button class="play-btn" id="playBtn">
+            <svg id="playIco" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+          </button>
+          <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+          <div class="time" id="timeLbl">0:00</div>
+        </div>
+        <div class="result-actions">
+          <button class="ra-btn primary" id="sendBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg>
+            Отправить в чат
+          </button>
+          <button class="ra-btn" id="dlBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            Скачать
+          </button>
+          <button class="ra-btn" id="shareBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="premium">
+        <div class="prem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3 7 7 .6-5.3 4.6L18 22l-6-4-6 4 1.3-7.8L2 9.6 9 9l3-7Z"/></svg>
+        </div>
+        <div class="prem-text">
+          <b>NeuroVox PRO</b>
+          <small>Безлимит · 124 голоса · без очереди</small>
+        </div>
+        <button class="prem-btn" id="premBtn">299₽</button>
+      </div>
+    </div>
+
+    <!-- ===== VIEW: VOICES LIBRARY ===== -->
+    <div class="view" data-view="voices">
+      <div class="sec-head">
+        <div class="sec-title">Каталог голосов</div>
+        <div class="sec-link">124 доступно</div>
+      </div>
+      <div id="voicesGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+    </div>
+
+    <!-- ===== VIEW: HISTORY ===== -->
+    <div class="view" data-view="history">
+      <div class="sec-head">
+        <div class="sec-title">Недавние</div>
+        <div class="sec-link">Очистить</div>
+      </div>
+      <div id="histList"></div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="nav">
+    <div class="nav-item active" data-nav="gen">
+      <div class="nav-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2-7 4 14 3-10 2 5h5"/></svg>
+      </div>
+      Генерация
+    </div>
+    <div class="nav-item" data-nav="voices">
+      <div class="nav-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+      </div>
+      Голоса
+    </div>
+    <div class="nav-fab" id="fabBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    </div>
+    <div class="nav-item" data-nav="history">
+      <div class="nav-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      </div>
+      История
+    </div>
+    <div class="nav-item" data-nav="profile">
+      <div class="nav-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      </div>
+      Профиль
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    <span id="toastTxt">Готово!</span>
+  </div>
+</div>
+
+<script>
+/* ====== DATA ====== */
+const VOICES = [
+  { id:'hyp', name:'Хайпстрим', cat:'Стример', initials:'ХП', color:'#8b5cf6', tag:'Топ', uses:'4.2M' },
+  { id:'ded', name:'Мемный Дед', cat:'Мем', initials:'МД', color:'#f59e0b', tag:'Огонь', uses:'2.8M' },
+  { id:'ani', name:'Анимешница', cat:'Аниме', initials:'АН', color:'#ec4899', tag:'Новое', uses:'920K' },
+  { id:'vit', name:'Гопник Витя', cat:'Мем', initials:'ГВ', color:'#22c55e', tag:'Топ', uses:'3.1M' },
+  { id:'tt', name:'ТикТок Бог', cat:'Блогер', initials:'ТБ', color:'#06b6d4', tag:'', uses:'1.5M' },
+  { id:'dj', name:'Диджей Митя', cat:'Музыка', initials:'ДМ', color:'#a855f7', tag:'', uses:'640K' },
+  { id:'cry', name:'Крипер 228', cat:'Гейминг', initials:'КР', color:'#10b981', tag:'Хайп', uses:'2.1M' },
+  { id:'maf', name:'Дон Палуччи', cat:'Кино', initials:'ДП', color:'#ef4444', tag:'', uses:'780K' },
+  { id:'sen', name:'Сенпай', cat:'Аниме', initials:'СП', color:'#f43f5e', tag:'Новое', uses:'410K' },
+  { id:'neu', name:'Нейродевочка', cat:'AI', initials:'НД', color:'#22d3ee', tag:'PRO', uses:'1.9M' },
+];
+
+const TEMPLATES = [
+  'Братан, я тут новый блог запускаю, подпишись, будет жарко!',
+  'Слышь, ты мне долг вернёшь или как? Я не понимаю...',
+  'Всем привет! Это ваш любимый стример, ловите новый видос!',
+  'Я тебя люблю, мам, прости что редко звоню!',
+  'Уважаемый, ваша посылка ожидает вас. Заберите, пожалуйста.'
+];
+
+const EMOTIONS = ['Хайп','Спокойствие','Злость','Смешливый','Грусть','Шёпот'];
+const SPEEDS = ['0.75×','1.0×','1.25×','1.5×','2.0×'];
+
+const HIST_SEED = [
+  { v: VOICES[0], text:'Братан, я тут новый блог запускаю...', time:'5 мин назад', dur:'0:07' },
+  { v: VOICES[3], text:'Слышь, ты мне долг вернёшь или как...', time:'2 ч назад', dur:'0:09' },
+  { v: VOICES[1], text:'Эээ, внучок, ить сюда, поговорим...', time:'вчера', dur:'0:12' },
+  { v: VOICES[9], text:'Привет, человек. Я нейросеть...', time:'вчера', dur:'0:15' },
+];
+
+/* ====== STATE ====== */
+let state = {
+  selected: VOICES[0],
+  emoIdx: 0,
+  spdIdx: 1,
+  coins: 240,
+  playing: false,
+  progress: 0,
+  playTimer: null,
+};
+
+/* ====== RENDER VOICES ROW ====== */
+const voicesRow = document.getElementById('voicesRow');
+function renderVoicesRow(){
+  voicesRow.innerHTML = VOICES.map(v => `
+    <div class="vcard ${state.selected.id===v.id?'active':''}" data-id="${v.id}">
+      <div class="vavatar" style="background:linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})">${v.initials}</div>
+      <div class="vname">${v.name}</div>
+      <div class="vmeta">${v.uses} · ${v.cat}</div>
+      ${v.tag ? `<div style="text-align:center;"><span class="vtag">${v.tag}</span></div>` : '<div style="height:18px"></div>'}
+    </div>
+  `).join('');
+  voicesRow.querySelectorAll('.vcard').forEach(el => {
+    el.onclick = () => { state.selected = VOICES.find(v=>v.id===el.dataset.id); renderVoicesRow(); renderVoicesGrid(); };
+  });
+}
+
+/* ====== RENDER VOICES GRID ====== */
+const voicesGrid = document.getElementById('voicesGrid');
+function renderVoicesGrid(){
+  voicesGrid.innerHTML = VOICES.map(v => `
+    <div class="vcard ${state.selected.id===v.id?'active':''}" data-id="${v.id}" style="width:auto;">
+      <div class="vavatar" style="background:linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})">${v.initials}</div>
+      <div class="vname">${v.name}</div>
+      <div class="vmeta">${v.uses} · ${v.cat}</div>
+      ${v.tag ? `<div style="text-align:center;"><span class="vtag">${v.tag}</span></div>` : '<div style="height:18px"></div>'}
+    </div>
+  `).join('');
+  voicesGrid.querySelectorAll('.vcard').forEach(el => {
+    el.onclick = () => {
+      state.selected = VOICES.find(v=>v.id===el.dataset.id);
+      renderVoicesGrid(); renderVoicesRow();
+      switchTab('gen');
+      toast('Голос выбран: ' + state.selected.name);
+    };
+  });
+}
+
+/* ====== RENDER HISTORY ====== */
+const histList = document.getElementById('histList');
+function renderHist(){
+  if(HIST_SEED.length === 0){
+    histList.innerHTML = `<div class="empty">
+      <div class="empty-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <b>Пока пусто</b>
+      <small>Сгенерируй первый голос — он появится тут</small>
+    </div>`;
+    return;
+  }
+  histList.innerHTML = HIST_SEED.map(h => `
+    <div class="hist-item">
+      <div class="hist-av" style="background:linear-gradient(135deg, ${h.v.color}, ${shade(h.v.color,-25)})">${h.v.initials}</div>
+      <div class="hist-info">
+        <b>${h.v.name}</b>
+        <small>${h.text}</small>
+      </div>
+      <div class="hist-meta">
+        <div class="hist-time">${h.time} · ${h.dur}</div>
+        <div class="hist-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h14v16H6z" opacity="0"/><path d="M7 4v16l13-8z"/></svg></div>
+      </div>
+    </div>
+  `).join('');
+  histList.querySelectorAll('.hist-item').forEach(el => {
+    el.onclick = () => toast('Воспроизведение...');
+  });
+}
+
+/* ====== WAVE BARS ====== */
+const wave = document.getElementById('wave');
+function buildWave(){
+  let html = '';
+  for(let i=0;i<32;i++){
+    const h = 20 + Math.abs(Math.sin(i*0.6)) * 80;
+    html += `<div class="bar" style="height:${h}%"></div>`;
+  }
+  wave.innerHTML = html;
+}
+
+/* ====== HELPERS ====== */
+function shade(hex, p){
+  const n = parseInt(hex.slice(1),16);
+  let r = (n>>16)&255, g=(n>>8)&255, b=n&255;
+  r = Math.max(0, Math.min(255, r + p));
+  g = Math.max(0, Math.min(255, g + p));
+  b = Math.max(0, Math.min(255, b + p));
+  return `rgb(${r},${g},${b})`;
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastTxt').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+/* ====== TABS ====== */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.dataset.view===name));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.nav===name));
+  document.querySelector('.scroll').scrollTop = 0;
+}
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => switchTab(t.dataset.tab));
+document.querySelectorAll('.nav-item').forEach(n => {
+  if(n.dataset.nav) n.onclick = () => {
+    if(n.dataset.nav==='profile'){ toast('Профиль — скоро 🚀'); return; }
+    switchTab(n.dataset.nav);
+  };
+});
+document.querySelectorAll('[data-jump]').forEach(el => el.onclick = () => switchTab(el.dataset.jump));
+document.getElementById('fabBtn').onclick = () => { switchTab('gen'); document.getElementById('textInput').focus(); };
+
+/* ====== TEXT INPUT ====== */
+const ti = document.getElementById('textInput');
+const cc = document.getElementById('charCount');
+ti.addEventListener('input', () => {
+  const l = ti.value.length;
+  cc.textContent = `${l} / 500`;
+  cc.classList.toggle('warn', l > 450);
+});
+document.getElementById('clearBtn').onclick = () => { ti.value=''; ti.dispatchEvent(new Event('input')); };
+document.getElementById('tplBtn').onclick = () => {
+  ti.value = TEMPLATES[Math.floor(Math.random()*TEMPLATES.length)];
+  ti.dispatchEvent(new Event('input'));
+  toast('Шаблон подставлен');
+};
+
+/* ====== EMOTION / SPEED ====== */
+document.getElementById('emoCycle').onclick = () => {
+  state.emoIdx = (state.emoIdx+1) % EMOTIONS.length;
+  document.getElementById('emoLbl').textContent = EMOTIONS[state.emoIdx];
+};
+document.getElementById('spdCycle').onclick = () => {
+  state.spdIdx = (state.spdIdx+1) % SPEEDS.length;
+  document.getElementById('spdLbl').textContent = SPEEDS[state.spdIdx];
+};
+
+/* ====== GENERATE ====== */
+const genBtn = document.getElementById('genBtn');
+const result = document.getElementById('result');
+
+genBtn.onclick = () => {
+  if(!ti.value.trim()){ toast('Сначала напиши текст!'); ti.focus(); return; }
+  if(state.coins < 5){ toast('Не хватает нейро-коинов'); return; }
+
+  genBtn.classList.add('loading');
+  result.classList.remove('show');
+
+  // simulate generation
+  setTimeout(() => {
+    genBtn.classList.remove('loading');
+    state.coins -= 5;
+    document.getElementById('coins').textContent = state.coins;
+
+    const v = state.selected;
+    document.getElementById('rAv').textContent = v.initials;
+    document.getElementById('rAv').style.background = `linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})`;
+    document.getElementById('rName').textContent = v.name;
+    const txt = ti.value.trim();
+    document.getElementById('rTxt').textContent = '«' + (txt.length>48 ? txt.slice(0,48)+'…' : txt) + '»';
+
+    const dur = Math.max(4, Math.min(30, Math.round(txt.length / 12)));
+    document.getElementById('rDur').textContent = `0:${String(dur).padStart(2,'0')}`;
+    result.dataset.dur = dur;
+
+    result.classList.add('show');
+
+    // prepend to history
+    HIST_SEED.unshift({
+      v, text: txt.length>40 ? txt.slice(0,40)+'…' : txt,
+      time: 'только что', dur: `0:${String(dur).padStart(2,'0')}`
+    });
+    if(HIST_SEED.length > 6) HIST_SEED.pop();
+    renderHist();
+
+    toast('Голос сгенерирован! 🔥');
+
+    // auto-play
+    setTimeout(()=> togglePlay(true), 400);
+  }, 1800);
+};
+
+/* ====== PLAYER ====== */
+const playBtn = document.getElementById('playBtn');
+const playIco = document.getElementById('playIco');
+const progFill = document.getElementById('progFill');
+const timeLbl = document.getElementById('timeLbl');
+
+function togglePlay(force){
+  if(!result.classList.contains('show')) return;
+  state.playing = force !== undefined ? force : !state.playing;
+  wave.classList.toggle('playing', state.playing);
+  playIco.innerHTML = state.playing
+    ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>'
+    : '<path d="M5 3l14 9-14 9V3Z"/>';
+  if(state.playing) startPlay(); else stopPlay();
+}
+
+function startPlay(){
+  clearInterval(state.playTimer);
+  const dur = parseInt(result.dataset.dur || 7);
+  state.progress = 0;
+  state.playTimer = setInterval(()=>{
+    state.progress += 0.1/dur;
+    if(state.progress >= 1){ state.progress = 1; stopPlay(); state.playing=false; wave.classList.remove('playing'); playIco.innerHTML='<path d="M5 3l14 9-14 9V3Z"/>'; }
+    progFill.style.width = (state.progress*100)+'%';
+    const t = state.progress * dur;
+    timeLbl.textContent = `0:${String(Math.floor(t)).padStart(2,'0')}`;
+  }, 100);
+}
+function stopPlay(){ clearInterval(state.playTimer); }
+
+playBtn.onclick = () => togglePlay();
+
+/* ====== RESULT ACTIONS ====== */
+document.getElementById('sendBtn').onclick = () => toast('Отправляем в Telegram-чат...');
+document.getElementById('dlBtn').onclick = () => toast('Аудио сохраняется (.mp3)');
+document.getElementById('shareBtn').onclick = () => toast('Поделиться голосовым');
+document.getElementById('premBtn').onclick = () => toast('Открываем PRO-подписку...');
+
+/* ====== INIT ====== */
+renderVoicesRow();
+renderVoicesGrid();
+renderHist();
+buildWave();
+ti.value = 'Братан, я тут новый блог запускаю, подпишись ок?';
+ti.dispatchEvent(new Event('input'));
+</script>
+
+</body>
+</html>
