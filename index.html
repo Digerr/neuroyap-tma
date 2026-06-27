@@ -348,11 +348,11 @@
   /* TTS engine status badge */
   .engine-badge{
     display:inline-flex; align-items:center; gap:5px;
-    background: rgba(34,211,238,0.12); border:1px solid rgba(34,211,238,0.3);
-    color: var(--cyan); padding:3px 8px; border-radius:6px;
+    background: rgba(163,230,53,0.14); border:1px solid rgba(163,230,53,0.35);
+    color: var(--lime); padding:3px 8px; border-radius:6px;
     font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
   }
-  .engine-badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--cyan); animation: pulse 2s infinite; }
+  .engine-badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--lime); animation: pulse 2s infinite; }
   @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.4;} }
   .engine-badge.mock{ background: rgba(245,166,35,0.12); border-color: rgba(245,166,35,0.3); color: var(--amber); }
   .engine-badge.mock .dot{ background: var(--amber); }
@@ -379,7 +379,7 @@
       </div>
       <div>
         <div class="brand-name">Neuro<span>Yap</span></div>
-        <div class="brand-tag" id="brandTag">AI Yap Engine · <span class="engine-badge mock" id="engineBadge"><span class="dot"></span>DEMO</span></div>
+        <div class="brand-tag" id="brandTag">AI Yap Engine · <span class="engine-badge" id="engineBadge"><span class="dot"></span>LIVE</span></div>
       </div>
     </div>
     <div class="balance" id="balanceBtn">
@@ -458,7 +458,7 @@
       </button>
       <div class="gen-cost">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>
-        Стоимость: 5 yap-коинов · ~3 сек · движок: <span id="engineName">DEMO</span>
+        Стоимость: 5 yap-коинов · ~3 сек · движок: <span id="engineName">GTTTS</span>
       </div>
 
       <div class="result" id="result">
@@ -636,7 +636,9 @@ const VOICES = [
     "tag": "top",
     "uses": "2.4M",
     "pitch": 0.89,
-    "locked": false
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.88
   },
   {
     "id": "str01",
@@ -647,7 +649,9 @@ const VOICES = [
     "tag": "top",
     "uses": "1.1M",
     "pitch": 0.88,
-    "locked": false
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.92
   },
   {
     "id": "str02",
@@ -656,9 +660,11 @@ const VOICES = [
     "initials": "ТВ",
     "color": "#06b6d4",
     "tag": "top",
-    "uses": "818K",
-    "pitch": 1.01,
-    "locked": false
+    "uses": "2.8M",
+    "pitch": 1.03,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.09
   },
   {
     "id": "str03",
@@ -667,9 +673,11 @@ const VOICES = [
     "initials": "КК",
     "color": "#a855f7",
     "tag": "",
-    "uses": "263K",
-    "pitch": 1.06,
-    "locked": false
+    "uses": "3.3M",
+    "pitch": 0.91,
+    "locked": false,
+    "tts_lang": "uk",
+    "tts_rate": 1.08
   },
   {
     "id": "str04",
@@ -678,9 +686,11 @@ const VOICES = [
     "initials": "СК",
     "color": "#6366f1",
     "tag": "",
-    "uses": "1.2M",
-    "pitch": 0.96,
-    "locked": false
+    "uses": "3.5M",
+    "pitch": 1.09,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.07
   },
   {
     "id": "str05",
@@ -689,9 +699,11 @@ const VOICES = [
     "initials": "ЛЛ",
     "color": "#7c3aed",
     "tag": "",
-    "uses": "649K",
-    "pitch": 0.89,
-    "locked": false
+    "uses": "6.6M",
+    "pitch": 1.02,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.06
   },
   {
     "id": "str06",
@@ -700,9 +712,11 @@ const VOICES = [
     "initials": "ЧМ",
     "color": "#8b5cf6",
     "tag": "",
-    "uses": "6.6M",
-    "pitch": 1.02,
-    "locked": false
+    "uses": "987K",
+    "pitch": 0.88,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.93
   },
   {
     "id": "str07",
@@ -711,9 +725,11 @@ const VOICES = [
     "initials": "ДТ",
     "color": "#9146ff",
     "tag": "hot",
-    "uses": "181K",
-    "pitch": 1.11,
-    "locked": false
+    "uses": "2.5M",
+    "pitch": 1.06,
+    "locked": false,
+    "tts_lang": "pl",
+    "tts_rate": 1.06
   },
   {
     "id": "str08",
@@ -722,9 +738,11 @@ const VOICES = [
     "initials": "ПД",
     "color": "#06b6d4",
     "tag": "",
-    "uses": "6.6M",
-    "pitch": 0.9,
-    "locked": false
+    "uses": "7.5M",
+    "pitch": 1.15,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.04
   },
   {
     "id": "str09",
@@ -733,9 +751,11 @@ const VOICES = [
     "initials": "Ф9",
     "color": "#a855f7",
     "tag": "",
-    "uses": "275K",
-    "pitch": 1.01,
-    "locked": false
+    "uses": "1.6M",
+    "pitch": 0.97,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.87
   },
   {
     "id": "str10",
@@ -744,9 +764,11 @@ const VOICES = [
     "initials": "БТ",
     "color": "#6366f1",
     "tag": "",
-    "uses": "6.9M",
-    "pitch": 0.92,
-    "locked": false
+    "uses": "4.8M",
+    "pitch": 0.89,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.89
   },
   {
     "id": "str11",
@@ -755,9 +777,11 @@ const VOICES = [
     "initials": "ХМ",
     "color": "#7c3aed",
     "tag": "",
-    "uses": "4.5M",
-    "pitch": 0.87,
-    "locked": false
+    "uses": "5.7M",
+    "pitch": 0.96,
+    "locked": false,
+    "tts_lang": "sk",
+    "tts_rate": 1.15
   },
   {
     "id": "str12",
@@ -766,9 +790,11 @@ const VOICES = [
     "initials": "КМ",
     "color": "#8b5cf6",
     "tag": "",
-    "uses": "4.8M",
-    "pitch": 0.89,
-    "locked": false
+    "uses": "256K",
+    "pitch": 1.04,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.09
   },
   {
     "id": "str13",
@@ -777,9 +803,11 @@ const VOICES = [
     "initials": "РД",
     "color": "#9146ff",
     "tag": "",
-    "uses": "6.7M",
-    "pitch": 1.12,
-    "locked": false
+    "uses": "5.5M",
+    "pitch": 1.14,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.11
   },
   {
     "id": "str14",
@@ -788,9 +816,11 @@ const VOICES = [
     "initials": "СТ",
     "color": "#06b6d4",
     "tag": "hot",
-    "uses": "1.1M",
-    "pitch": 1.11,
-    "locked": false
+    "uses": "6.6M",
+    "pitch": 0.88,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.98
   },
   {
     "id": "str15",
@@ -799,9 +829,11 @@ const VOICES = [
     "initials": "КГ",
     "color": "#a855f7",
     "tag": "",
-    "uses": "710K",
-    "pitch": 1.15,
-    "locked": false
+    "uses": "5.3M",
+    "pitch": 1.0,
+    "locked": false,
+    "tts_lang": "bg",
+    "tts_rate": 0.88
   },
   {
     "id": "mem00",
@@ -810,9 +842,11 @@ const VOICES = [
     "initials": "МД",
     "color": "#f59e0b",
     "tag": "top",
-    "uses": "1.2M",
-    "pitch": 0.92,
-    "locked": false
+    "uses": "508K",
+    "pitch": 0.95,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.04
   },
   {
     "id": "mem01",
@@ -821,9 +855,11 @@ const VOICES = [
     "initials": "ГВ",
     "color": "#22c55e",
     "tag": "top",
-    "uses": "180K",
-    "pitch": 0.58,
-    "locked": false
+    "uses": "6.1M",
+    "pitch": 0.79,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.92
   },
   {
     "id": "mem02",
@@ -832,9 +868,11 @@ const VOICES = [
     "initials": "СВ",
     "color": "#dc2626",
     "tag": "top",
-    "uses": "8.9M",
-    "pitch": 0.62,
-    "locked": false
+    "uses": "1.6M",
+    "pitch": 0.58,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.92
   },
   {
     "id": "mem03",
@@ -843,9 +881,11 @@ const VOICES = [
     "initials": "ДК",
     "color": "#a16207",
     "tag": "",
-    "uses": "508K",
-    "pitch": 0.95,
-    "locked": false
+    "uses": "684K",
+    "pitch": 0.78,
+    "locked": false,
+    "tts_lang": "uk",
+    "tts_rate": 0.92
   },
   {
     "id": "mem04",
@@ -854,9 +894,11 @@ const VOICES = [
     "initials": "ШЛ",
     "color": "#84cc16",
     "tag": "",
-    "uses": "1.4M",
-    "pitch": 0.64,
-    "locked": false
+    "uses": "462K",
+    "pitch": 0.72,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.99
   },
   {
     "id": "mem05",
@@ -865,9 +907,11 @@ const VOICES = [
     "initials": "КП",
     "color": "#ca8a04",
     "tag": "",
-    "uses": "107K",
-    "pitch": 0.58,
-    "locked": false
+    "uses": "6.2M",
+    "pitch": 0.65,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.91
   },
   {
     "id": "mem06",
@@ -876,9 +920,11 @@ const VOICES = [
     "initials": "ЖК",
     "color": "#f59e0b",
     "tag": "",
-    "uses": "172K",
-    "pitch": 0.76,
-    "locked": false
+    "uses": "4.4M",
+    "pitch": 0.9,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.87
   },
   {
     "id": "mem07",
@@ -887,9 +933,11 @@ const VOICES = [
     "initials": "УД",
     "color": "#22c55e",
     "tag": "hot",
-    "uses": "684K",
-    "pitch": 0.78,
-    "locked": false
+    "uses": "871K",
+    "pitch": 0.89,
+    "locked": false,
+    "tts_lang": "pl",
+    "tts_rate": 0.9
   },
   {
     "id": "mem08",
@@ -898,9 +946,11 @@ const VOICES = [
     "initials": "ЛЯ",
     "color": "#dc2626",
     "tag": "",
-    "uses": "7.6M",
-    "pitch": 0.72,
-    "locked": false
+    "uses": "1.7M",
+    "pitch": 0.66,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.09
   },
   {
     "id": "mem09",
@@ -909,9 +959,11 @@ const VOICES = [
     "initials": "ПК",
     "color": "#a16207",
     "tag": "",
-    "uses": "6.2M",
-    "pitch": 0.65,
-    "locked": false
+    "uses": "2.4M",
+    "pitch": 0.67,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.14
   },
   {
     "id": "mem10",
@@ -920,9 +972,11 @@ const VOICES = [
     "initials": "БЗ",
     "color": "#84cc16",
     "tag": "",
-    "uses": "2.5M",
-    "pitch": 0.74,
-    "locked": false
+    "uses": "1.1M",
+    "pitch": 0.78,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.0
   },
   {
     "id": "mem11",
@@ -931,9 +985,11 @@ const VOICES = [
     "initials": "ДП",
     "color": "#ca8a04",
     "tag": "",
-    "uses": "9.1M",
-    "pitch": 0.94,
-    "locked": false
+    "uses": "170K",
+    "pitch": 0.79,
+    "locked": false,
+    "tts_lang": "sk",
+    "tts_rate": 1.05
   },
   {
     "id": "mem12",
@@ -942,9 +998,11 @@ const VOICES = [
     "initials": "БГ",
     "color": "#f59e0b",
     "tag": "",
-    "uses": "4.4M",
-    "pitch": 0.9,
-    "locked": false
+    "uses": "140K",
+    "pitch": 0.8,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.98
   },
   {
     "id": "mem13",
@@ -953,9 +1011,11 @@ const VOICES = [
     "initials": "СВ",
     "color": "#22c55e",
     "tag": "",
-    "uses": "371K",
-    "pitch": 0.92,
-    "locked": false
+    "uses": "421K",
+    "pitch": 0.65,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.97
   },
   {
     "id": "mem14",
@@ -964,9 +1024,11 @@ const VOICES = [
     "initials": "СН",
     "color": "#dc2626",
     "tag": "hot",
-    "uses": "2.4M",
-    "pitch": 0.67,
-    "locked": false
+    "uses": "2.2M",
+    "pitch": 0.77,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.0
   },
   {
     "id": "mem15",
@@ -975,9 +1037,11 @@ const VOICES = [
     "initials": "ЭЛ",
     "color": "#a16207",
     "tag": "",
-    "uses": "1.1M",
-    "pitch": 0.78,
-    "locked": false
+    "uses": "3.3M",
+    "pitch": 0.73,
+    "locked": false,
+    "tts_lang": "bg",
+    "tts_rate": 1.01
   },
   {
     "id": "ani00",
@@ -986,9 +1050,11 @@ const VOICES = [
     "initials": "АН",
     "color": "#ec4899",
     "tag": "top",
-    "uses": "4.9M",
-    "pitch": 1.29,
-    "locked": false
+    "uses": "5.9M",
+    "pitch": 1.25,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 0.89
   },
   {
     "id": "ani01",
@@ -997,9 +1063,11 @@ const VOICES = [
     "initials": "СП",
     "color": "#f43f5e",
     "tag": "top",
-    "uses": "2.8M",
-    "pitch": 1.49,
-    "locked": false
+    "uses": "782K",
+    "pitch": 1.24,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.08
   },
   {
     "id": "ani02",
@@ -1008,9 +1076,11 @@ const VOICES = [
     "initials": "ЦД",
     "color": "#fb7185",
     "tag": "top",
-    "uses": "667K",
-    "pitch": 1.3,
-    "locked": false
+    "uses": "342K",
+    "pitch": 1.5,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.14
   },
   {
     "id": "ani03",
@@ -1019,9 +1089,11 @@ const VOICES = [
     "initials": "КВ",
     "color": "#f9a8d4",
     "tag": "",
-    "uses": "860K",
-    "pitch": 1.39,
-    "locked": false
+    "uses": "440K",
+    "pitch": 1.47,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 0.97
   },
   {
     "id": "ani04",
@@ -1030,9 +1102,11 @@ const VOICES = [
     "initials": "ЯД",
     "color": "#e11d48",
     "tag": "",
-    "uses": "2.5M",
-    "pitch": 1.38,
-    "locked": false
+    "uses": "139K",
+    "pitch": 1.5,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 0.92
   },
   {
     "id": "ani05",
@@ -1041,9 +1115,11 @@ const VOICES = [
     "initials": "КХ",
     "color": "#be185d",
     "tag": "",
-    "uses": "3.1M",
-    "pitch": 1.2,
-    "locked": false
+    "uses": "4.7M",
+    "pitch": 1.31,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.11
   },
   {
     "id": "ani06",
@@ -1052,9 +1128,11 @@ const VOICES = [
     "initials": "МГ",
     "color": "#ec4899",
     "tag": "",
-    "uses": "664K",
-    "pitch": 1.45,
-    "locked": false
+    "uses": "6.9M",
+    "pitch": 1.32,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 0.86
   },
   {
     "id": "ani07",
@@ -1063,9 +1141,11 @@ const VOICES = [
     "initials": "ЛО",
     "color": "#f43f5e",
     "tag": "hot",
-    "uses": "954K",
-    "pitch": 1.33,
-    "locked": false
+    "uses": "1.2M",
+    "pitch": 1.41,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 0.95
   },
   {
     "id": "ani08",
@@ -1074,9 +1154,11 @@ const VOICES = [
     "initials": "ШГ",
     "color": "#fb7185",
     "tag": "",
-    "uses": "915K",
-    "pitch": 1.54,
-    "locked": false
+    "uses": "690K",
+    "pitch": 1.27,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 0.86
   },
   {
     "id": "ani09",
@@ -1085,9 +1167,11 @@ const VOICES = [
     "initials": "СМ",
     "color": "#f9a8d4",
     "tag": "",
-    "uses": "462K",
-    "pitch": 1.47,
-    "locked": false
+    "uses": "171K",
+    "pitch": 1.53,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.13
   },
   {
     "id": "ani10",
@@ -1096,9 +1180,11 @@ const VOICES = [
     "initials": "НД",
     "color": "#e11d48",
     "tag": "",
-    "uses": "342K",
-    "pitch": 1.5,
-    "locked": false
+    "uses": "5.5M",
+    "pitch": 1.43,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 0.95
   },
   {
     "id": "ani11",
@@ -1107,9 +1193,11 @@ const VOICES = [
     "initials": "ГС",
     "color": "#be185d",
     "tag": "",
-    "uses": "440K",
-    "pitch": 1.47,
-    "locked": false
+    "uses": "488K",
+    "pitch": 1.44,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.12
   },
   {
     "id": "ani12",
@@ -1118,9 +1206,11 @@ const VOICES = [
     "initials": "МК",
     "color": "#ec4899",
     "tag": "",
-    "uses": "139K",
-    "pitch": 1.5,
-    "locked": false
+    "uses": "315K",
+    "pitch": 1.35,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.02
   },
   {
     "id": "ani13",
@@ -1129,9 +1219,11 @@ const VOICES = [
     "initials": "ОТ",
     "color": "#f43f5e",
     "tag": "",
-    "uses": "2.4M",
-    "pitch": 1.21,
-    "locked": false
+    "uses": "6.4M",
+    "pitch": 1.38,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.09
   },
   {
     "id": "ani14",
@@ -1140,9 +1232,11 @@ const VOICES = [
     "initials": "КП",
     "color": "#fb7185",
     "tag": "hot",
-    "uses": "385K",
-    "pitch": 1.32,
-    "locked": false
+    "uses": "5.6M",
+    "pitch": 1.23,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.14
   },
   {
     "id": "ani15",
@@ -1151,9 +1245,11 @@ const VOICES = [
     "initials": "ВФ",
     "color": "#f9a8d4",
     "tag": "",
-    "uses": "1.2M",
-    "pitch": 1.51,
-    "locked": false
+    "uses": "4.8M",
+    "pitch": 1.41,
+    "locked": false,
+    "tts_lang": "ja",
+    "tts_rate": 1.08
   },
   {
     "id": "gam00",
@@ -1162,9 +1258,11 @@ const VOICES = [
     "initials": "КР",
     "color": "#10b981",
     "tag": "top",
-    "uses": "5.3M",
-    "pitch": 0.88,
-    "locked": false
+    "uses": "5.8M",
+    "pitch": 1.05,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.93
   },
   {
     "id": "gam01",
@@ -1173,9 +1271,11 @@ const VOICES = [
     "initials": "НБ",
     "color": "#0891b2",
     "tag": "top",
-    "uses": "408K",
-    "pitch": 0.96,
-    "locked": false
+    "uses": "3.9M",
+    "pitch": 0.83,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.9
   },
   {
     "id": "gam02",
@@ -1184,9 +1284,11 @@ const VOICES = [
     "initials": "ПР",
     "color": "#6366f1",
     "tag": "top",
-    "uses": "693K",
-    "pitch": 1.04,
-    "locked": false
+    "uses": "438K",
+    "pitch": 1.02,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.97
   },
   {
     "id": "gam03",
@@ -1195,9 +1297,11 @@ const VOICES = [
     "initials": "СЛ",
     "color": "#84cc16",
     "tag": "",
-    "uses": "912K",
-    "pitch": 1.16,
-    "locked": false
+    "uses": "883K",
+    "pitch": 1.03,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.99
   },
   {
     "id": "gam04",
@@ -1206,9 +1310,11 @@ const VOICES = [
     "initials": "СН",
     "color": "#14b8a6",
     "tag": "",
-    "uses": "5.6M",
-    "pitch": 0.84,
-    "locked": false
+    "uses": "5.9M",
+    "pitch": 1.12,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.12
   },
   {
     "id": "gam05",
@@ -1217,9 +1323,11 @@ const VOICES = [
     "initials": "ТК",
     "color": "#0d9488",
     "tag": "",
-    "uses": "250K",
-    "pitch": 0.81,
-    "locked": false
+    "uses": "1.7M",
+    "pitch": 0.93,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.05
   },
   {
     "id": "gam06",
@@ -1228,9 +1336,11 @@ const VOICES = [
     "initials": "ХЛ",
     "color": "#10b981",
     "tag": "",
-    "uses": "4.4M",
-    "pitch": 1.09,
-    "locked": false
+    "uses": "706K",
+    "pitch": 1.03,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.86
   },
   {
     "id": "gam07",
@@ -1239,9 +1349,11 @@ const VOICES = [
     "initials": "ДС",
     "color": "#0891b2",
     "tag": "hot",
-    "uses": "105K",
-    "pitch": 1.16,
-    "locked": false
+    "uses": "7.6M",
+    "pitch": 0.88,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.95
   },
   {
     "id": "gam08",
@@ -1250,9 +1362,11 @@ const VOICES = [
     "initials": "КМ",
     "color": "#6366f1",
     "tag": "",
-    "uses": "9.8M",
-    "pitch": 0.82,
-    "locked": false
+    "uses": "1.8M",
+    "pitch": 0.81,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.01
   },
   {
     "id": "gam09",
@@ -1261,9 +1375,11 @@ const VOICES = [
     "initials": "ГЛ",
     "color": "#84cc16",
     "tag": "",
-    "uses": "6.9M",
-    "pitch": 1.2,
-    "locked": false
+    "uses": "353K",
+    "pitch": 0.88,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.86
   },
   {
     "id": "gam10",
@@ -1272,9 +1388,11 @@ const VOICES = [
     "initials": "СП",
     "color": "#14b8a6",
     "tag": "",
-    "uses": "5.8M",
-    "pitch": 1.16,
-    "locked": false
+    "uses": "323K",
+    "pitch": 0.99,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.93
   },
   {
     "id": "gam11",
@@ -1283,9 +1401,11 @@ const VOICES = [
     "initials": "ФР",
     "color": "#0d9488",
     "tag": "",
-    "uses": "383K",
-    "pitch": 1.11,
-    "locked": false
+    "uses": "267K",
+    "pitch": 1.19,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.88
   },
   {
     "id": "gam12",
@@ -1294,9 +1414,11 @@ const VOICES = [
     "initials": "ГФ",
     "color": "#10b981",
     "tag": "",
-    "uses": "4.2M",
-    "pitch": 1.09,
-    "locked": false
+    "uses": "4.4M",
+    "pitch": 0.83,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.06
   },
   {
     "id": "gam13",
@@ -1305,9 +1427,11 @@ const VOICES = [
     "initials": "МД",
     "color": "#0891b2",
     "tag": "",
-    "uses": "4.7M",
-    "pitch": 1.08,
-    "locked": false
+    "uses": "6.2M",
+    "pitch": 1.12,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.02
   },
   {
     "id": "gam14",
@@ -1316,9 +1440,11 @@ const VOICES = [
     "initials": "АД",
     "color": "#6366f1",
     "tag": "hot",
-    "uses": "3.9M",
-    "pitch": 0.99,
-    "locked": false
+    "uses": "1.9M",
+    "pitch": 1.06,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.85
   },
   {
     "id": "gam15",
@@ -1327,9 +1453,11 @@ const VOICES = [
     "initials": "ТС",
     "color": "#84cc16",
     "tag": "",
-    "uses": "883K",
-    "pitch": 1.03,
-    "locked": false
+    "uses": "6.8M",
+    "pitch": 1.08,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.98
   },
   {
     "id": "kin00",
@@ -1338,9 +1466,11 @@ const VOICES = [
     "initials": "ДП",
     "color": "#7f1d1d",
     "tag": "top",
-    "uses": "3.6M",
-    "pitch": 0.75,
-    "locked": false
+    "uses": "7.4M",
+    "pitch": 0.57,
+    "locked": false,
+    "tts_lang": "de",
+    "tts_rate": 1.02
   },
   {
     "id": "kin01",
@@ -1349,9 +1479,11 @@ const VOICES = [
     "initials": "ДР",
     "color": "#1e3a8a",
     "tag": "top",
-    "uses": "1.8M",
-    "pitch": 0.46,
-    "locked": false
+    "uses": "6.9M",
+    "pitch": 0.58,
+    "locked": false,
+    "tts_lang": "fr",
+    "tts_rate": 1.06
   },
   {
     "id": "kin02",
@@ -1360,9 +1492,11 @@ const VOICES = [
     "initials": "ЗЗ",
     "color": "#000000",
     "tag": "top",
-    "uses": "767K",
-    "pitch": 0.47,
-    "locked": false
+    "uses": "423K",
+    "pitch": 0.5,
+    "locked": false,
+    "tts_lang": "it",
+    "tts_rate": 1.01
   },
   {
     "id": "kin03",
@@ -1371,9 +1505,11 @@ const VOICES = [
     "initials": "ГГ",
     "color": "#7c2d12",
     "tag": "",
-    "uses": "8.2M",
-    "pitch": 0.68,
-    "locked": false
+    "uses": "3.9M",
+    "pitch": 0.69,
+    "locked": false,
+    "tts_lang": "es",
+    "tts_rate": 1.14
   },
   {
     "id": "kin04",
@@ -1382,9 +1518,11 @@ const VOICES = [
     "initials": "АК",
     "color": "#581c87",
     "tag": "",
-    "uses": "2.2M",
-    "pitch": 0.76,
-    "locked": false
+    "uses": "2.5M",
+    "pitch": 0.46,
+    "locked": false,
+    "tts_lang": "de",
+    "tts_rate": 1.01
   },
   {
     "id": "kin05",
@@ -1393,9 +1531,11 @@ const VOICES = [
     "initials": "ШИ",
     "color": "#3730a3",
     "tag": "",
-    "uses": "689K",
-    "pitch": 0.72,
-    "locked": false
+    "uses": "6.3M",
+    "pitch": 0.71,
+    "locked": false,
+    "tts_lang": "fr",
+    "tts_rate": 1.08
   },
   {
     "id": "kin06",
@@ -1404,9 +1544,11 @@ const VOICES = [
     "initials": "НБ",
     "color": "#7f1d1d",
     "tag": "",
-    "uses": "950K",
-    "pitch": 0.7,
-    "locked": false
+    "uses": "4.8M",
+    "pitch": 0.59,
+    "locked": false,
+    "tts_lang": "it",
+    "tts_rate": 1.14
   },
   {
     "id": "kin07",
@@ -1415,9 +1557,11 @@ const VOICES = [
     "initials": "КД",
     "color": "#1e3a8a",
     "tag": "hot",
-    "uses": "679K",
-    "pitch": 0.76,
-    "locked": false
+    "uses": "4.2M",
+    "pitch": 0.68,
+    "locked": false,
+    "tts_lang": "es",
+    "tts_rate": 1.06
   },
   {
     "id": "kin08",
@@ -1426,9 +1570,11 @@ const VOICES = [
     "initials": "ПХ",
     "color": "#000000",
     "tag": "",
-    "uses": "1.9M",
-    "pitch": 0.71,
-    "locked": false
+    "uses": "221K",
+    "pitch": 0.67,
+    "locked": false,
+    "tts_lang": "de",
+    "tts_rate": 0.97
   },
   {
     "id": "kin09",
@@ -1437,9 +1583,11 @@ const VOICES = [
     "initials": "ВТ",
     "color": "#7c2d12",
     "tag": "",
-    "uses": "3.8M",
-    "pitch": 0.73,
-    "locked": false
+    "uses": "4.8M",
+    "pitch": 0.57,
+    "locked": false,
+    "tts_lang": "fr",
+    "tts_rate": 1.03
   },
   {
     "id": "kin10",
@@ -1448,9 +1596,11 @@ const VOICES = [
     "initials": "РГ",
     "color": "#581c87",
     "tag": "",
-    "uses": "5.9M",
-    "pitch": 0.76,
-    "locked": false
+    "uses": "857K",
+    "pitch": 0.49,
+    "locked": false,
+    "tts_lang": "it",
+    "tts_rate": 1.08
   },
   {
     "id": "kin11",
@@ -1459,9 +1609,11 @@ const VOICES = [
     "initials": "КА",
     "color": "#3730a3",
     "tag": "",
-    "uses": "3.4M",
-    "pitch": 0.78,
-    "locked": false
+    "uses": "3.9M",
+    "pitch": 0.48,
+    "locked": false,
+    "tts_lang": "es",
+    "tts_rate": 0.85
   },
   {
     "id": "kin12",
@@ -1470,9 +1622,11 @@ const VOICES = [
     "initials": "ДР",
     "color": "#7f1d1d",
     "tag": "",
-    "uses": "5.7M",
-    "pitch": 0.58,
-    "locked": false
+    "uses": "5.8M",
+    "pitch": 0.48,
+    "locked": false,
+    "tts_lang": "de",
+    "tts_rate": 0.92
   },
   {
     "id": "kin13",
@@ -1481,9 +1635,11 @@ const VOICES = [
     "initials": "ФР",
     "color": "#1e3a8a",
     "tag": "",
-    "uses": "364K",
-    "pitch": 0.59,
-    "locked": false
+    "uses": "372K",
+    "pitch": 0.78,
+    "locked": false,
+    "tts_lang": "fr",
+    "tts_rate": 0.87
   },
   {
     "id": "kin14",
@@ -1492,9 +1648,11 @@ const VOICES = [
     "initials": "ЗБ",
     "color": "#000000",
     "tag": "hot",
-    "uses": "7.8M",
-    "pitch": 0.67,
-    "locked": true
+    "uses": "4.2M",
+    "pitch": 0.64,
+    "locked": true,
+    "tts_lang": "it",
+    "tts_rate": 0.94
   },
   {
     "id": "kin15",
@@ -1503,9 +1661,11 @@ const VOICES = [
     "initials": "ПР",
     "color": "#7c2d12",
     "tag": "",
-    "uses": "4.1M",
-    "pitch": 0.49,
-    "locked": true
+    "uses": "4.2M",
+    "pitch": 0.69,
+    "locked": true,
+    "tts_lang": "es",
+    "tts_rate": 1.12
   },
   {
     "id": "mus00",
@@ -1514,9 +1674,11 @@ const VOICES = [
     "initials": "ДМ",
     "color": "#a855f7",
     "tag": "top",
-    "uses": "2.5M",
-    "pitch": 0.81,
-    "locked": false
+    "uses": "1.7M",
+    "pitch": 1.23,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.1
   },
   {
     "id": "mus01",
@@ -1525,9 +1687,11 @@ const VOICES = [
     "initials": "РЯ",
     "color": "#facc15",
     "tag": "top",
-    "uses": "814K",
-    "pitch": 1.27,
-    "locked": false
+    "uses": "6.8M",
+    "pitch": 1.11,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.08
   },
   {
     "id": "mus02",
@@ -1537,8 +1701,10 @@ const VOICES = [
     "color": "#ec4899",
     "tag": "top",
     "uses": "4.8M",
-    "pitch": 1.02,
-    "locked": false
+    "pitch": 0.86,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.14
   },
   {
     "id": "mus03",
@@ -1547,9 +1713,11 @@ const VOICES = [
     "initials": "ПС",
     "color": "#22d3ee",
     "tag": "",
-    "uses": "510K",
-    "pitch": 1.05,
-    "locked": false
+    "uses": "5.1M",
+    "pitch": 1.08,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.88
   },
   {
     "id": "mus04",
@@ -1558,9 +1726,11 @@ const VOICES = [
     "initials": "ВК",
     "color": "#fb923c",
     "tag": "",
-    "uses": "1.4M",
-    "pitch": 0.86,
-    "locked": false
+    "uses": "833K",
+    "pitch": 0.95,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.06
   },
   {
     "id": "mus05",
@@ -1569,9 +1739,11 @@ const VOICES = [
     "initials": "БС",
     "color": "#34d399",
     "tag": "",
-    "uses": "489K",
-    "pitch": 1.03,
-    "locked": false
+    "uses": "5.3M",
+    "pitch": 0.99,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.13
   },
   {
     "id": "mus06",
@@ -1580,9 +1752,11 @@ const VOICES = [
     "initials": "БР",
     "color": "#a855f7",
     "tag": "",
-    "uses": "5.1M",
-    "pitch": 1.1,
-    "locked": false
+    "uses": "3.9M",
+    "pitch": 0.93,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.85
   },
   {
     "id": "mus07",
@@ -1591,9 +1765,11 @@ const VOICES = [
     "initials": "ГТ",
     "color": "#facc15",
     "tag": "hot",
-    "uses": "2.3M",
-    "pitch": 0.92,
-    "locked": false
+    "uses": "2.8M",
+    "pitch": 1.07,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.95
   },
   {
     "id": "mus08",
@@ -1602,9 +1778,11 @@ const VOICES = [
     "initials": "СК",
     "color": "#ec4899",
     "tag": "",
-    "uses": "4.8M",
-    "pitch": 0.95,
-    "locked": false
+    "uses": "2.4M",
+    "pitch": 1.09,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.92
   },
   {
     "id": "mus09",
@@ -1613,9 +1791,11 @@ const VOICES = [
     "initials": "ПИ",
     "color": "#22d3ee",
     "tag": "",
-    "uses": "1.4M",
-    "pitch": 1.26,
-    "locked": false
+    "uses": "6.7M",
+    "pitch": 0.99,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.05
   },
   {
     "id": "mus10",
@@ -1624,9 +1804,11 @@ const VOICES = [
     "initials": "СХ",
     "color": "#fb923c",
     "tag": "",
-    "uses": "372K",
-    "pitch": 1.21,
-    "locked": false
+    "uses": "704K",
+    "pitch": 0.97,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.88
   },
   {
     "id": "mus11",
@@ -1635,9 +1817,11 @@ const VOICES = [
     "initials": "ТР",
     "color": "#34d399",
     "tag": "",
-    "uses": "4.2M",
-    "pitch": 1.03,
-    "locked": false
+    "uses": "1.3M",
+    "pitch": 1.0,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.05
   },
   {
     "id": "mus12",
@@ -1646,9 +1830,11 @@ const VOICES = [
     "initials": "РК",
     "color": "#a855f7",
     "tag": "",
-    "uses": "4.2M",
-    "pitch": 1.1,
-    "locked": false
+    "uses": "5.7M",
+    "pitch": 1.12,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.11
   },
   {
     "id": "mus13",
@@ -1657,9 +1843,11 @@ const VOICES = [
     "initials": "ПК",
     "color": "#facc15",
     "tag": "",
-    "uses": "1.2M",
-    "pitch": 0.91,
-    "locked": false
+    "uses": "5.1M",
+    "pitch": 1.11,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.92
   },
   {
     "id": "mus14",
@@ -1668,9 +1856,11 @@ const VOICES = [
     "initials": "МТ",
     "color": "#ec4899",
     "tag": "hot",
-    "uses": "5.1M",
+    "uses": "200K",
     "pitch": 1.18,
-    "locked": false
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.06
   },
   {
     "id": "mus15",
@@ -1679,9 +1869,11 @@ const VOICES = [
     "initials": "ТЛ",
     "color": "#22d3ee",
     "tag": "",
-    "uses": "3.3M",
-    "pitch": 1.3,
-    "locked": false
+    "uses": "1.1M",
+    "pitch": 0.96,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.87
   },
   {
     "id": "ai00",
@@ -1690,9 +1882,11 @@ const VOICES = [
     "initials": "НД",
     "color": "#22d3ee",
     "tag": "top",
-    "uses": "9.3M",
-    "pitch": 1.29,
-    "locked": false
+    "uses": "6.5M",
+    "pitch": 1.34,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.94
   },
   {
     "id": "ai01",
@@ -1701,9 +1895,11 @@ const VOICES = [
     "initials": "РБ",
     "color": "#64748b",
     "tag": "top",
-    "uses": "418K",
-    "pitch": 0.97,
-    "locked": false
+    "uses": "863K",
+    "pitch": 0.92,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.12
   },
   {
     "id": "ai02",
@@ -1712,9 +1908,11 @@ const VOICES = [
     "initials": "АЗ",
     "color": "#8b5cf6",
     "tag": "top",
-    "uses": "220K",
-    "pitch": 1.05,
-    "locked": false
+    "uses": "735K",
+    "pitch": 0.71,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.08
   },
   {
     "id": "ai03",
@@ -1723,9 +1921,11 @@ const VOICES = [
     "initials": "КА",
     "color": "#3b82f6",
     "tag": "",
-    "uses": "4.8M",
-    "pitch": 1.33,
-    "locked": false
+    "uses": "551K",
+    "pitch": 0.53,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.96
   },
   {
     "id": "ai04",
@@ -1734,9 +1934,11 @@ const VOICES = [
     "initials": "ГЛ",
     "color": "#0ea5e9",
     "tag": "",
-    "uses": "2.9M",
-    "pitch": 1.13,
-    "locked": false
+    "uses": "2.4M",
+    "pitch": 0.61,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.01
   },
   {
     "id": "ai05",
@@ -1745,9 +1947,11 @@ const VOICES = [
     "initials": "ТР",
     "color": "#06b6d4",
     "tag": "",
-    "uses": "5.5M",
-    "pitch": 1.2,
-    "locked": false
+    "uses": "8.5M",
+    "pitch": 1.13,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.95
   },
   {
     "id": "ai06",
@@ -1756,9 +1960,11 @@ const VOICES = [
     "initials": "АП",
     "color": "#22d3ee",
     "tag": "",
-    "uses": "2.8M",
-    "pitch": 0.96,
-    "locked": false
+    "uses": "841K",
+    "pitch": 1.07,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.97
   },
   {
     "id": "ai07",
@@ -1767,9 +1973,11 @@ const VOICES = [
     "initials": "ВК",
     "color": "#64748b",
     "tag": "hot",
-    "uses": "4.6M",
-    "pitch": 1.24,
-    "locked": false
+    "uses": "1.5M",
+    "pitch": 0.96,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.99
   },
   {
     "id": "ai08",
@@ -1778,9 +1986,11 @@ const VOICES = [
     "initials": "СТ",
     "color": "#8b5cf6",
     "tag": "",
-    "uses": "520K",
-    "pitch": 0.54,
-    "locked": false
+    "uses": "1.4M",
+    "pitch": 0.9,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.04
   },
   {
     "id": "ai09",
@@ -1789,9 +1999,11 @@ const VOICES = [
     "initials": "ГШ",
     "color": "#3b82f6",
     "tag": "",
-    "uses": "6.3M",
-    "pitch": 0.92,
-    "locked": false
+    "uses": "575K",
+    "pitch": 1.27,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.94
   },
   {
     "id": "ai10",
@@ -1800,9 +2012,11 @@ const VOICES = [
     "initials": "ЭБ",
     "color": "#0ea5e9",
     "tag": "",
-    "uses": "1.8M",
-    "pitch": 0.58,
-    "locked": false
+    "uses": "604K",
+    "pitch": 0.6,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 0.92
   },
   {
     "id": "ai11",
@@ -1811,9 +2025,11 @@ const VOICES = [
     "initials": "РК",
     "color": "#06b6d4",
     "tag": "",
-    "uses": "770K",
-    "pitch": 1.32,
-    "locked": false
+    "uses": "6.9M",
+    "pitch": 0.86,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.07
   },
   {
     "id": "ai12",
@@ -1822,9 +2038,11 @@ const VOICES = [
     "initials": "СБ",
     "color": "#22d3ee",
     "tag": "",
-    "uses": "6.2M",
-    "pitch": 1.22,
-    "locked": false
+    "uses": "5.7M",
+    "pitch": 1.3,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 0.93
   },
   {
     "id": "ai13",
@@ -1833,9 +2051,11 @@ const VOICES = [
     "initials": "БМ",
     "color": "#64748b",
     "tag": "",
-    "uses": "5.1M",
-    "pitch": 1.02,
-    "locked": false
+    "uses": "2.6M",
+    "pitch": 0.58,
+    "locked": false,
+    "tts_lang": "en",
+    "tts_rate": 1.06
   },
   {
     "id": "ai14",
@@ -1844,9 +2064,11 @@ const VOICES = [
     "initials": "МХ",
     "color": "#8b5cf6",
     "tag": "hot",
-    "uses": "200K",
-    "pitch": 1.15,
-    "locked": false
+    "uses": "2.2M",
+    "pitch": 1.31,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.1
   },
   {
     "id": "ai15",
@@ -1855,9 +2077,11 @@ const VOICES = [
     "initials": "АБ",
     "color": "#3b82f6",
     "tag": "",
-    "uses": "1.1M",
-    "pitch": 0.78,
-    "locked": false
+    "uses": "6.4M",
+    "pitch": 1.34,
+    "locked": false,
+    "tts_lang": "ru",
+    "tts_rate": 1.09
   },
   {
     "id": "vip00",
@@ -1866,9 +2090,11 @@ const VOICES = [
     "initials": "ГБ",
     "color": "#fbbf24",
     "tag": "pro",
-    "uses": "973K",
-    "pitch": 0.57,
-    "locked": true
+    "uses": "987K",
+    "pitch": 0.63,
+    "locked": true,
+    "tts_lang": "de",
+    "tts_rate": 0.94
   },
   {
     "id": "vip01",
@@ -1877,9 +2103,11 @@ const VOICES = [
     "initials": "ДА",
     "color": "#dc2626",
     "tag": "pro",
-    "uses": "6.5M",
-    "pitch": 0.41,
-    "locked": true
+    "uses": "4.2M",
+    "pitch": 0.57,
+    "locked": true,
+    "tts_lang": "fr",
+    "tts_rate": 1.12
   },
   {
     "id": "vip02",
@@ -1888,9 +2116,11 @@ const VOICES = [
     "initials": "АР",
     "color": "#a855f7",
     "tag": "pro",
-    "uses": "863K",
-    "pitch": 0.57,
-    "locked": true
+    "uses": "5.9M",
+    "pitch": 0.65,
+    "locked": true,
+    "tts_lang": "it",
+    "tts_rate": 0.96
   },
   {
     "id": "vip03",
@@ -1899,9 +2129,11 @@ const VOICES = [
     "initials": "ЛВ",
     "color": "#f5a623",
     "tag": "pro",
-    "uses": "2.4M",
-    "pitch": 0.62,
-    "locked": true
+    "uses": "1.2M",
+    "pitch": 0.7,
+    "locked": true,
+    "tts_lang": "es",
+    "tts_rate": 1.05
   },
   {
     "id": "vip04",
@@ -1910,9 +2142,11 @@ const VOICES = [
     "initials": "ЦС",
     "color": "#ec4899",
     "tag": "pro",
-    "uses": "551K",
-    "pitch": 0.41,
-    "locked": true
+    "uses": "4.4M",
+    "pitch": 0.54,
+    "locked": true,
+    "tts_lang": "de",
+    "tts_rate": 1.1
   },
   {
     "id": "vip05",
@@ -1921,9 +2155,11 @@ const VOICES = [
     "initials": "ФР",
     "color": "#facc15",
     "tag": "pro",
-    "uses": "6.7M",
-    "pitch": 0.46,
-    "locked": true
+    "uses": "4.6M",
+    "pitch": 0.63,
+    "locked": true,
+    "tts_lang": "fr",
+    "tts_rate": 0.96
   },
   {
     "id": "vip06",
@@ -1932,9 +2168,11 @@ const VOICES = [
     "initials": "ИМ",
     "color": "#fbbf24",
     "tag": "pro",
-    "uses": "2.5M",
-    "pitch": 0.72,
-    "locked": true
+    "uses": "2.6M",
+    "pitch": 0.68,
+    "locked": true,
+    "tts_lang": "it",
+    "tts_rate": 1.02
   },
   {
     "id": "vip07",
@@ -1943,9 +2181,11 @@ const VOICES = [
     "initials": "ПВ",
     "color": "#dc2626",
     "tag": "pro",
-    "uses": "177K",
-    "pitch": 0.45,
-    "locked": true
+    "uses": "781K",
+    "pitch": 0.73,
+    "locked": true,
+    "tts_lang": "es",
+    "tts_rate": 0.98
   },
   {
     "id": "vip08",
@@ -1954,9 +2194,11 @@ const VOICES = [
     "initials": "ВС",
     "color": "#a855f7",
     "tag": "pro",
-    "uses": "114K",
-    "pitch": 0.49,
-    "locked": true
+    "uses": "3.2M",
+    "pitch": 0.6,
+    "locked": true,
+    "tts_lang": "de",
+    "tts_rate": 0.91
   },
   {
     "id": "vip09",
@@ -1965,9 +2207,11 @@ const VOICES = [
     "initials": "ВЛ",
     "color": "#f5a623",
     "tag": "pro",
-    "uses": "5.7M",
-    "pitch": 0.69,
-    "locked": true
+    "uses": "5.6M",
+    "pitch": 0.44,
+    "locked": true,
+    "tts_lang": "fr",
+    "tts_rate": 0.93
   },
   {
     "id": "vip10",
@@ -1976,9 +2220,11 @@ const VOICES = [
     "initials": "ТТ",
     "color": "#ec4899",
     "tag": "pro",
-    "uses": "1.9M",
-    "pitch": 0.51,
-    "locked": true
+    "uses": "773K",
+    "pitch": 0.69,
+    "locked": true,
+    "tts_lang": "it",
+    "tts_rate": 0.93
   },
   {
     "id": "vip11",
@@ -1987,9 +2233,11 @@ const VOICES = [
     "initials": "КЛ",
     "color": "#facc15",
     "tag": "pro",
-    "uses": "6.5M",
-    "pitch": 0.63,
-    "locked": true
+    "uses": "3.1M",
+    "pitch": 0.46,
+    "locked": true,
+    "tts_lang": "es",
+    "tts_rate": 0.89
   }
 ];
 
@@ -2016,55 +2264,119 @@ const HIST_SEED = [
   { v: null, text:'Привет, человек. Я нейросеть...', time:'вчера', dur:15 },
 ];
 
-/* ===== TTS ENGINE STUB =====
- * This is a mock TTS engine. In production it will call:
- *   - ElevenLabs API (premium quality, English-heavy)
- *   - Silero TTS (open-source, Russian-strong)
+/* ===== TTS ENGINE — REAL AUDIO via Google Translate TTS =====
+ * Free, no API key, works in browser via <audio> tag.
+ * Google TTS endpoint: https://translate.google.com/translate_tts
+ *   - Supports ~200 chars per request → we chunk longer text
+ *   - 1 voice per language (tl=ru → Tatyana, tl=en → English, etc.)
+ *   - We vary playback rate (audio.playbackRate) per voice for differentiation
+ *
+ * Future backends (drop-in replacements):
+ *   - ElevenLabs API (premium, voice cloning)
+ *   - Silero TTS (open-source, Russian-strong, self-hosted)
  *   - MiniMax TTS (balanced, multilingual)
- * The interface stays the same: generate(text, voice, opts) → { audio_url, duration, engine }
  */
 const TTS_ENGINE = {
-  name: 'DEMO',
-  isMock: true,
-  backends: ['elevenlabs', 'silero', 'minimax'],  // planned providers
+  name: 'GTTTS',
+  isMock: false,
+  backends: ['gtts', 'elevenlabs', 'silero', 'minimax'],
+  endpoint: 'https://translate.google.com/translate_tts',
+  chunkSize: 190,  // max chars per request (Google limit ~200)
+
+  // Split text into TTS-friendly chunks (prefer sentence boundaries)
+  chunkText(text) {
+    if (text.length <= this.chunkSize) return [text];
+    const chunks = [];
+    // Split by sentence enders, then group into chunks <= chunkSize
+    const sentences = text.match(/[^.!?]+[.!?]*\s*/g) || [text];
+    let current = '';
+    for (const s of sentences) {
+      if ((current + s).length > this.chunkSize) {
+        if (current) chunks.push(current.trim());
+        // If a single sentence is too long, hard-split it
+        if (s.length > this.chunkSize) {
+          for (let i = 0; i < s.length; i += this.chunkSize) {
+            chunks.push(s.slice(i, i + this.chunkSize).trim());
+          }
+          current = '';
+        } else {
+          current = s;
+        }
+      } else {
+        current += s;
+      }
+    }
+    if (current.trim()) chunks.push(current.trim());
+    return chunks;
+  },
+
+  // Build a Google TTS URL for a single chunk
+  buildUrl(text, lang) {
+    const params = new URLSearchParams({
+      ie: 'UTF-8',
+      q: text,
+      tl: lang,
+      client: 'tw-ob',
+    });
+    return `${this.endpoint}?${params.toString()}`;
+  },
 
   async generate(text, voice, opts = {}) {
-    // MOCK: simulate network + processing latency
-    const latency = 1500 + Math.random() * 1000;
-    await new Promise(r => setTimeout(r, latency));
-
-    // Estimate duration from text length and speed
+    const lang = voice.tts_lang || 'ru';
+    const chunks = this.chunkText(text);
     const speed = opts.speed || 1.0;
-    const baseDur = Math.max(3, Math.min(30, Math.round(text.length / 12)));
-    const duration = baseDur / speed;
 
-    // Generate deterministic waveform seed (same voice+text → same wave)
+    // Build audio URLs for each chunk
+    const urls = chunks.map(c => this.buildUrl(c, lang));
+
+    // Preload first chunk to measure real duration via HTMLAudioElement
+    const probe = new Audio();
+    probe.crossOrigin = 'anonymous';
+    probe.preload = 'metadata';
+    probe.src = urls[0];
+
+    let probedDuration = 0;
+    try {
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(resolve, 3000);  // don't block forever
+        probe.addEventListener('loadedmetadata', () => {
+          clearTimeout(timer);
+          probedDuration = probe.duration;
+          resolve();
+        });
+        probe.addEventListener('error', () => { clearTimeout(timer); resolve(); });
+      });
+    } catch(e) { /* fall back to estimate */ }
+
+    // Estimate total duration: probed * num_chunks, or fallback to length-based
+    const perChunk = probedDuration > 0 ? probedDuration : Math.max(2, chunks[0].length / 14);
+    const duration = perChunk * chunks.length / speed;
+
+    // Deterministic waveform seed (same voice+text → same wave)
     const seed = voice.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0)
                + text.slice(0,20).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
 
     return {
-      audio_url: null,        // null = mock
+      audio_urls: urls,           // array of URLs to play in sequence
       duration,
       engine: this.name,
-      mock: true,
+      mock: false,
       seed,
       voice_id: voice.id,
+      voice_rate: voice.tts_rate || 1.0,
       emotion: opts.emotion || 'Хайп',
       speed,
+      lang,
       created_at: Date.now(),
     };
   },
 
-  preview(voice) {
-    // Quick preview: 1.5s blip
+  async preview(voice) {
     return this.generate('Привет, это голос ' + voice.name, voice, { speed: 1.0 });
   },
 
-  // Future: switch backend at runtime
   setBackend(name) {
     if (this.backends.includes(name)) {
-      this.name = name.toUpperCase();
-      this.isMock = false;
       console.log('[TTS] Switched to', name);
     } else {
       console.warn('[TTS] Unknown backend', name);
@@ -2192,8 +2504,6 @@ function voiceCard(v){
   const catObj = CATS.find(c=>c.id===v.cat);
   const isFav = state.favs.has(v.id);
   const locked = v.locked;
-  const tagCls = v.tag==='top'?'':v.tag==='hot'?'hot':v.tag==='new'?'new':v.tag==='pro'?'pro':'';
-  const tagLbl = v.tag==='top'?'ТОП':v.tag==='hot'?'ОГОНЬ':v.tag==='new'?'NEW':v.tag==='pro'?'PRO':'';
   return `
     <div class="vcard ${state.selected && state.selected.id===v.id?'active':''} ${locked?'locked':''}" data-id="${v.id}">
       ${isFav ? `<div class="vcard-fav on" data-fav="${v.id}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4 4.5 8C19 16.5 12 21 12 21Z"/></svg></div>`
@@ -2203,7 +2513,7 @@ function voiceCard(v){
       <div class="vavatar" style="background:linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})">${v.initials}</div>
       <div class="vname">${v.name}</div>
       <div class="vmeta"><span class="cat-ico">${catObj.icon}</span>${v.uses}</div>
-      ${tagLbl ? `<div style="text-align:center;"><span class="vtag ${tagCls}">${tagLbl}</span></div>` : '<div style="height:18px"></div>'}
+      <div style="height:8px"></div>
     </div>
   `;
 }
@@ -2291,26 +2601,45 @@ function updateWavePlayed(){
   bars.forEach((b,i) => b.classList.toggle('played', i < played));
 }
 
-/* ===== SCRUB WAVEFORM ===== */
+/* ===== SCRUB WAVEFORM — seek to position in audio ===== */
 const waveWrap = $('waveWrap');
 const waveTip = $('waveTip');
 waveWrap.addEventListener('click', (e) => {
   haptic('light');
+  if (!state.currentAudio) return;
   const rect = waveWrap.getBoundingClientRect();
   const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
   const ratio = x / rect.width;
-  const dur = parseInt($('result').dataset.dur || 7);
-  state.progress = ratio;
-  updateWavePlayed();
-  $('progFill').style.width = (ratio*100)+'%';
-  const t = ratio * dur;
-  $('timeLbl').textContent = `${fmt(t)} / ${fmt(dur)}`;
+  const dur = getTotalDuration();
+  const targetTime = ratio * dur;
+  // Find which chunk the target falls into
+  let acc = 0;
+  let foundIdx = 0;
+  for (let i = 0; i < state.chunkDurations.length; i++) {
+    const chunkDur = state.chunkDurations[i] || 0;
+    if (acc + chunkDur >= targetTime) { foundIdx = i; break; }
+    acc += chunkDur;
+    foundIdx = i + 1;
+  }
+  if (foundIdx < state.currentAudio.audio_urls.length) {
+    const offsetInChunk = Math.max(0, targetTime - acc) * state.playSpeed;
+    if (foundIdx !== state.chunkIdx) {
+      state.chunkIdx = foundIdx;
+      audioEl.src = state.currentAudio.audio_urls[foundIdx];
+    }
+    audioEl.currentTime = offsetInChunk;
+    state.progress = ratio;
+    updateWavePlayed();
+    $('progFill').style.width = (ratio*100)+'%';
+    $('timeLbl').textContent = `${fmt(targetTime)} / ${fmt(dur)}`;
+    if (state.playing) audioEl.play().catch(()=>{});
+  }
 });
 waveWrap.addEventListener('mousemove', (e) => {
   const rect = waveWrap.getBoundingClientRect();
   const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
   const ratio = x / rect.width;
-  const dur = parseInt($('result').dataset.dur || 7);
+  const dur = getTotalDuration();
   waveTip.style.left = x + 'px';
   waveTip.textContent = fmt(ratio * dur);
 });
@@ -2424,6 +2753,13 @@ genBtn.onclick = async () => {
 
   waveSeed = audio.seed;
 
+  // Reset playback state
+  stopPlayback();
+  audioEl.src = '';
+  state.currentAudio = audio;
+  state.chunkIdx = 0;
+  state.chunkDurations = new Array(audio.audio_urls.length).fill(undefined);
+
   $('rAv').textContent = v.initials;
   $('rAv').style.background = `linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})`;
   $('rName').textContent = v.name;
@@ -2431,7 +2767,7 @@ genBtn.onclick = async () => {
 
   const dur = Math.round(audio.duration);
   state.totalSec += dur;
-  $('rDur').textContent = `0:${String(dur).padStart(2,'0')}`;
+  $('rDur').textContent = fmt(dur);
   result.dataset.dur = dur;
 
   buildWave();
@@ -2442,6 +2778,9 @@ genBtn.onclick = async () => {
 
   result.classList.add('show');
 
+  // Preload first chunk so playback starts instantly on tap
+  audioEl.src = audio.audio_urls[0];
+
   HIST_SEED.unshift({
     v, text: text.length>40 ? text.slice(0,40)+'…' : text,
     time: 'только что', dur
@@ -2451,49 +2790,145 @@ genBtn.onclick = async () => {
   updateStats();
 
   haptic('success');
-  toast(audio.mock ? 'Голос сгенерирован (DEMO) 🔥' : 'Голос сгенерирован! 🔥');
-  setTimeout(()=> togglePlay(true), 400);
+  toast('Голос сгенерирован! 🔥 Нажми Play');
+  // Auto-play after a short delay (user gesture: the click on Generate)
+  setTimeout(()=> togglePlay(true), 300);
 };
 
-/* ===== PLAYER ===== */
+/* ===== PLAYER — REAL AUDIO PLAYBACK =====
+ * Uses a single <audio> element to play TTS chunks sequentially.
+ * state.currentAudio holds the result from TTS_ENGINE.generate()
+ * state.audioEl is the shared HTMLAudioElement
+ */
 const playBtn = $('playBtn');
 const playIco = $('playIco');
 const progFill = $('progFill');
 const timeLbl = $('timeLbl');
 
+// Create persistent audio element
+const audioEl = new Audio();
+audioEl.preload = 'auto';
+
+state.currentAudio = null;   // last generated audio result
+state.chunkIdx = 0;          // current chunk index
+state.chunkDurations = [];   // measured durations per chunk
+
+// Measure & cache chunk durations as they load
+audioEl.addEventListener('loadedmetadata', () => {
+  if (state.chunkDurations[state.chunkIdx] === undefined) {
+    state.chunkDurations[state.chunkIdx] = audioEl.duration || 0;
+  }
+  // Update total duration display once we know more
+  updateTotalDuration();
+});
+
+audioEl.addEventListener('ended', () => {
+  // Advance to next chunk
+  state.chunkIdx++;
+  if (state.chunkIdx < (state.currentAudio?.audio_urls?.length || 0)) {
+    audioEl.src = state.currentAudio.audio_urls[state.chunkIdx];
+    audioEl.playbackRate = state.playSpeed * (state.currentAudio.voice_rate || 1.0);
+    audioEl.volume = state.volume / 100;
+    audioEl.play().catch(e => console.warn('[audio] play failed:', e));
+  } else {
+    // All chunks played
+    if (state.loop) {
+      state.chunkIdx = 0;
+      audioEl.src = state.currentAudio.audio_urls[0];
+      audioEl.play().catch(e => console.warn('[audio] loop play failed:', e));
+    } else {
+      stopPlayback();
+    }
+  }
+});
+
+audioEl.addEventListener('timeupdate', () => {
+  if (!state.playing) return;
+  // Compute global progress across chunks
+  const dur = getTotalDuration();
+  const cur = getCurrentTime();
+  state.progress = dur > 0 ? Math.min(1, cur / dur) : 0;
+  progFill.style.width = (state.progress * 100) + '%';
+  updateWavePlayed();
+  timeLbl.textContent = `${fmt(cur)} / ${fmt(dur)}`;
+});
+
+audioEl.addEventListener('error', (e) => {
+  console.warn('[audio] error', e);
+  // Try to skip to next chunk on error
+  state.chunkIdx++;
+  if (state.currentAudio && state.chunkIdx < state.currentAudio.audio_urls.length) {
+    audioEl.src = state.currentAudio.audio_urls[state.chunkIdx];
+    audioEl.play().catch(() => {});
+  } else {
+    stopPlayback();
+    toast('⚠️ Ошибка воспроизведения');
+  }
+});
+
+function getTotalDuration() {
+  const d = state.chunkDurations.reduce((a, b) => a + (b || 0), 0);
+  if (d > 0) return d / state.playSpeed;
+  return parseInt($('result').dataset.dur || 7);
+}
+
+function getCurrentTime() {
+  let prev = 0;
+  for (let i = 0; i < state.chunkIdx; i++) {
+    prev += state.chunkDurations[i] || 0;
+  }
+  return (prev + (audioEl.currentTime || 0)) / state.playSpeed;
+}
+
+function updateTotalDuration() {
+  const dur = getTotalDuration();
+  $('result').dataset.dur = Math.round(dur);
+  $('rDur').textContent = fmt(dur);
+}
+
 function togglePlay(force){
-  if(!result.classList.contains('show')) return;
+  if (!result.classList.contains('show') || !state.currentAudio) return;
   state.playing = force !== undefined ? force : !state.playing;
   wave.classList.toggle('playing', state.playing);
   playIco.innerHTML = state.playing
     ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>'
     : '<path d="M5 3l14 9-14 9V3Z"/>';
-  if(state.playing) startPlay(); else stopPlay();
+  if (state.playing) {
+    // If audio is at end, restart from beginning
+    if (state.chunkIdx >= (state.currentAudio.audio_urls?.length || 0)) {
+      state.chunkIdx = 0;
+    }
+    if (!audioEl.src || audioEl.ended) {
+      audioEl.src = state.currentAudio.audio_urls[state.chunkIdx];
+    }
+    audioEl.playbackRate = state.playSpeed * (state.currentAudio.voice_rate || 1.0);
+    audioEl.volume = state.volume / 100;
+    audioEl.play().catch(e => {
+      console.warn('[audio] play rejected:', e);
+      toast('🔊 Тапни ещё раз — браузер требует жест');
+      state.playing = false;
+      wave.classList.remove('playing');
+      playIco.innerHTML = '<path d="M5 3l14 9-14 9V3Z"/>';
+    });
+  } else {
+    audioEl.pause();
+  }
 }
 
-function startPlay(){
-  clearInterval(state.playTimer);
-  const dur = parseInt(result.dataset.dur || 7);
-  const interval = 100 / state.playSpeed;
-  state.playTimer = setInterval(()=>{
-    state.progress += 0.1 / dur * state.playSpeed;
-    if(state.progress >= 1){
-      if(state.loop){ state.progress = 0; }
-      else {
-        state.progress = 1;
-        stopPlay();
-        state.playing = false;
-        wave.classList.remove('playing');
-        playIco.innerHTML = '<path d="M5 3l14 9-14 9V3Z"/>';
-      }
-    }
-    progFill.style.width = (state.progress*100)+'%';
-    updateWavePlayed();
-    const t = state.progress * dur;
-    timeLbl.textContent = `${fmt(t)} / ${fmt(dur)}`;
-  }, interval);
+function stopPlayback() {
+  state.playing = false;
+  audioEl.pause();
+  audioEl.currentTime = 0;
+  state.chunkIdx = 0;
+  state.chunkDurations = [];
+  wave.classList.remove('playing');
+  playIco.innerHTML = '<path d="M5 3l14 9-14 9V3Z"/>';
+  state.progress = 0;
+  progFill.style.width = '0%';
+  updateWavePlayed();
+  const dur = getTotalDuration();
+  timeLbl.textContent = `0:00 / ${fmt(dur)}`;
 }
-function stopPlay(){ clearInterval(state.playTimer); }
 
 playBtn.onclick = () => { haptic('light'); togglePlay(); };
 
@@ -2504,7 +2939,10 @@ $('spdBtn').onclick = () => {
   state.playSpeed = parseFloat(SPEEDS[idx]);
   $('pcSpd').textContent = SPEEDS[idx];
   $('pcSpd').parentElement.classList.toggle('active', SPEEDS[idx] !== '1.0×');
-  if(state.playing){ startPlay(); }
+  // Apply live if playing
+  if (state.playing && state.currentAudio) {
+    audioEl.playbackRate = state.playSpeed * (state.currentAudio.voice_rate || 1.0);
+  }
 };
 $('loopBtn').onclick = () => {
   haptic('light');
@@ -2519,6 +2957,7 @@ $('volBtn').onclick = () => {
   state.volume = levels[idx];
   $('pcVol').textContent = state.volume + '%';
   $('volBtn').classList.toggle('active', state.volume !== 100);
+  audioEl.volume = state.volume / 100;
 };
 
 /* ===== RESULT ACTIONS ===== */
