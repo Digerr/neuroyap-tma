@@ -2264,31 +2264,35 @@ const HIST_SEED = [
   { v: null, text:'Привет, человек. Я нейросеть...', time:'вчера', dur:15 },
 ];
 
-/* ===== TTS ENGINE — REAL AUDIO via Google Translate TTS (direct, no proxy) =====
- * Free, no API key, no proxy needed.
+/* ===== TTS ENGINE — Google Translate TTS via fetch+blob (bypasses ORB) =====
+ * Strategy: fetch the MP3 as a blob (mode: 'cors'), then createObjectURL and
+ * assign to audio.src. This bypasses Opaque Response Blocking that prevents
+ * direct cross-origin <audio src> playback.
  *
- * Google TTS endpoint returns `cross-origin-resource-policy: cross-origin`
- * which allows the audio to be loaded and played from any origin via the
- * HTMLAudioElement. No CORS preflight needed for media element playback.
+ * We try multiple CORS proxies in order until one works:
+ *   1. allorigins.win/raw  (free, sometimes rate-limited)
+ *   2. corsproxy.io        (requires browser Origin header)
+ *   3. Direct Google TTS   (works in some browsers with relaxed ORB)
  *
  * Google TTS endpoint: https://translate.google.com/translate_tts
  *   - Supports ~200 chars per request → we chunk longer text
  *   - 1 voice per language (tl=ru → Tatyana, tl=en → English, etc.)
  *   - We vary playback rate (audio.playbackRate) per voice for differentiation
- *
- * Future backends (drop-in replacements):
- *   - ElevenLabs API (premium, voice cloning)
- *   - Silero TTS (open-source, Russian-strong, self-hosted)
- *   - MiniMax TTS (balanced, multilingual)
  */
 const TTS_ENGINE = {
   name: 'GTTTS',
   isMock: false,
   backends: ['gtts', 'elevenlabs', 'silero', 'minimax'],
   ttsEndpoint: 'https://translate.google.com/translate_tts',
-  chunkSize: 190,  // max chars per request (Google limit ~200)
+  proxies: [
+    (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+    (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+    (u) => u,  // direct (will work in some TG WebApp versions)
+  ],
+  chunkSize: 190,
+  _proxyIdx: 0,
+  _workingProxy: null,
 
-  // Split text into TTS-friendly chunks (prefer sentence boundaries)
   chunkText(text) {
     if (text.length <= this.chunkSize) return [text];
     const chunks = [];
@@ -2313,15 +2317,44 @@ const TTS_ENGINE = {
     return chunks;
   },
 
-  // Build a direct Google TTS URL for a single chunk
-  buildUrl(text, lang) {
+  buildGoogleUrl(text, lang) {
     const params = new URLSearchParams({
-      ie: 'UTF-8',
-      q: text,
-      tl: lang,
-      client: 'tw-ob',
+      ie: 'UTF-8', q: text, tl: lang, client: 'tw-ob',
     });
     return `${this.ttsEndpoint}?${params.toString()}`;
+  },
+
+  // Fetch a URL as a blob, trying each proxy until one works.
+  // Returns object URL or null on failure.
+  async fetchAsBlob(googleUrl) {
+    // If we already know which proxy works, use it
+    const proxiesToTry = this._workingProxy !== null
+      ? [this.proxies[this._workingProxy]]
+      : this.proxies;
+
+    for (let i = 0; i < proxiesToTry.length; i++) {
+      const proxyFn = proxiesToTry[i];
+      const url = proxyFn(googleUrl);
+      try {
+        const r = await fetch(url, { mode: 'cors', credentials: 'omit' });
+        if (!r.ok) { console.warn('[TTS] proxy HTTP', r.status, proxyFn.name || i); continue; }
+        const blob = await r.blob();
+        if (blob.size < 100) { console.warn('[TTS] blob too small', blob.size); continue; }
+        if (!blob.type.startsWith('audio/') && !blob.type.startsWith('application/')) {
+          console.warn('[TTS] wrong content-type', blob.type);
+          continue;
+        }
+        // Remember which proxy worked
+        if (this._workingProxy === null) {
+          this._workingProxy = this.proxies.indexOf(proxyFn);
+          console.log('[TTS] working proxy idx:', this._workingProxy);
+        }
+        return URL.createObjectURL(blob);
+      } catch (e) {
+        console.warn('[TTS] proxy failed', i, e.message);
+      }
+    }
+    return null;
   },
 
   async generate(text, voice, opts = {}) {
@@ -2329,37 +2362,38 @@ const TTS_ENGINE = {
     const chunks = this.chunkText(text);
     const speed = opts.speed || 1.0;
 
-    // Build audio URLs for each chunk
-    const urls = chunks.map(c => this.buildUrl(c, lang));
+    // Build Google TTS URLs for each chunk
+    const googleUrls = chunks.map(c => this.buildGoogleUrl(c, lang));
 
-    // Preload first chunk to measure real duration via HTMLAudioElement
-    const probe = new Audio();
-    probe.preload = 'metadata';
-    probe.src = urls[0];
-
+    // Fetch first chunk as blob to measure real duration
+    const firstBlobUrl = await this.fetchAsBlob(googleUrls[0]);
     let probedDuration = 0;
-    try {
-      await new Promise((resolve) => {
-        const timer = setTimeout(resolve, 4000);  // don't block forever
-        probe.addEventListener('loadedmetadata', () => {
-          clearTimeout(timer);
-          probedDuration = probe.duration;
-          resolve();
+    if (firstBlobUrl) {
+      const probe = new Audio();
+      probe.preload = 'metadata';
+      probe.src = firstBlobUrl;
+      try {
+        await new Promise((resolve) => {
+          const timer = setTimeout(resolve, 4000);
+          probe.addEventListener('loadedmetadata', () => {
+            clearTimeout(timer);
+            probedDuration = probe.duration;
+            resolve();
+          });
+          probe.addEventListener('error', () => { clearTimeout(timer); resolve(); });
         });
-        probe.addEventListener('error', () => { clearTimeout(timer); resolve(); });
-      });
-    } catch(e) { /* fall back to estimate */ }
+      } catch(e) {}
+    }
 
-    // Estimate total duration: probed * num_chunks, or fallback to length-based
     const perChunk = probedDuration > 0 ? probedDuration : Math.max(2, chunks[0].length / 14);
     const duration = perChunk * chunks.length / speed;
 
-    // Deterministic waveform seed (same voice+text → same wave)
     const seed = voice.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0)
                + text.slice(0,20).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
 
     return {
-      audio_urls: urls,           // array of direct URLs to play in sequence
+      google_urls: googleUrls,        // original Google TTS URLs
+      first_blob_url: firstBlobUrl,   // pre-fetched blob URL for first chunk
       duration,
       engine: this.name,
       mock: false,
@@ -2378,11 +2412,7 @@ const TTS_ENGINE = {
   },
 
   setBackend(name) {
-    if (this.backends.includes(name)) {
-      console.log('[TTS] Switched to', name);
-    } else {
-      console.warn('[TTS] Unknown backend', name);
-    }
+    if (this.backends.includes(name)) console.log('[TTS] Switched to', name);
   },
 };
 
@@ -2606,7 +2636,7 @@ function updateWavePlayed(){
 /* ===== SCRUB WAVEFORM — seek to position in audio ===== */
 const waveWrap = $('waveWrap');
 const waveTip = $('waveTip');
-waveWrap.addEventListener('click', (e) => {
+waveWrap.addEventListener('click', async (e) => {
   haptic('light');
   if (!state.currentAudio) return;
   const rect = waveWrap.getBoundingClientRect();
@@ -2614,7 +2644,6 @@ waveWrap.addEventListener('click', (e) => {
   const ratio = x / rect.width;
   const dur = getTotalDuration();
   const targetTime = ratio * dur;
-  // Find which chunk the target falls into
   let acc = 0;
   let foundIdx = 0;
   for (let i = 0; i < state.chunkDurations.length; i++) {
@@ -2623,18 +2652,26 @@ waveWrap.addEventListener('click', (e) => {
     acc += chunkDur;
     foundIdx = i + 1;
   }
-  if (foundIdx < state.currentAudio.audio_urls.length) {
+  if (foundIdx < state.currentAudio.google_urls.length) {
     const offsetInChunk = Math.max(0, targetTime - acc) * state.playSpeed;
-    if (foundIdx !== state.chunkIdx) {
-      state.chunkIdx = foundIdx;
-      audioEl.src = state.currentAudio.audio_urls[foundIdx];
+    // Ensure the chunk blob is loaded
+    if (!state.blobUrls[foundIdx]) {
+      toast('⏳ Загружаем секцию...');
+      await preloadChunk(foundIdx);
     }
-    audioEl.currentTime = offsetInChunk;
-    state.progress = ratio;
-    updateWavePlayed();
-    $('progFill').style.width = (ratio*100)+'%';
-    $('timeLbl').textContent = `${fmt(targetTime)} / ${fmt(dur)}`;
-    if (state.playing) audioEl.play().catch(()=>{});
+    if (state.blobUrls[foundIdx]) {
+      if (foundIdx !== state.chunkIdx || audioEl.src !== state.blobUrls[foundIdx]) {
+        state.chunkIdx = foundIdx;
+        audioEl.src = state.blobUrls[foundIdx];
+        audioEl.load();
+      }
+      try { audioEl.currentTime = offsetInChunk; } catch(e) {}
+      state.progress = ratio;
+      updateWavePlayed();
+      $('progFill').style.width = (ratio*100)+'%';
+      $('timeLbl').textContent = `${fmt(targetTime)} / ${fmt(dur)}`;
+      if (state.playing) audioEl.play().catch(()=>{});
+    }
   }
 });
 waveWrap.addEventListener('mousemove', (e) => {
@@ -2755,13 +2792,16 @@ genBtn.onclick = async () => {
 
   waveSeed = audio.seed;
 
-  // Reset playback state (without setting audioEl.src='' which triggers error event)
+  // Reset playback state
   state.playing = false;
-  audioEl.pause();
-  audioEl.currentTime = 0;
+  try { audioEl.pause(); } catch(e) {}
+  try { audioEl.currentTime = 0; } catch(e) {}
+  // Revoke previous object URLs to free memory
+  if (state.blobUrls) state.blobUrls.forEach(u => { try { URL.revokeObjectURL(u); } catch(e) {} });
+  state.blobUrls = [];
   state.currentAudio = audio;
   state.chunkIdx = 0;
-  state.chunkDurations = new Array(audio.audio_urls.length).fill(undefined);
+  state.chunkDurations = new Array(audio.google_urls.length).fill(undefined);
   wave.classList.remove('playing');
   playIco.innerHTML = '<path d="M5 3l14 9-14 9V3Z"/>';
   state.progress = 0;
@@ -2784,11 +2824,15 @@ genBtn.onclick = async () => {
 
   result.classList.add('show');
 
-  // Preload first chunk so playback starts instantly on tap.
-  // Use audioEl.src directly — Google TTS returns CORP: cross-origin,
-  // which allows HTMLAudioElement to load and play the MP3 cross-origin.
-  audioEl.src = audio.audio_urls[0];
-  audioEl.load();  // explicitly trigger reload after src change
+  // Use pre-fetched blob URL for first chunk (already in audio.first_blob_url)
+  if (audio.first_blob_url) {
+    state.blobUrls[0] = audio.first_blob_url;
+    audioEl.src = audio.first_blob_url;
+    audioEl.load();
+  } else {
+    toast('⚠️ Не удалось загрузить аудио. Попробуй ещё раз');
+    haptic('error');
+  }
 
   HIST_SEED.unshift({
     v, text: text.length>40 ? text.slice(0,40)+'…' : text,
@@ -2821,29 +2865,53 @@ audioEl.preload = 'auto';
 state.currentAudio = null;   // last generated audio result
 state.chunkIdx = 0;          // current chunk index
 state.chunkDurations = [];   // measured durations per chunk
+state.blobUrls = [];         // blob URLs for each chunk (lazily fetched)
+
+// Preload next chunk in background while current one plays
+async function preloadChunk(idx) {
+  if (!state.currentAudio || idx >= state.currentAudio.google_urls.length) return;
+  if (state.blobUrls[idx]) return;  // already loaded
+  try {
+    const blobUrl = await TTS_ENGINE.fetchAsBlob(state.currentAudio.google_urls[idx]);
+    if (blobUrl) state.blobUrls[idx] = blobUrl;
+  } catch(e) { console.warn('[audio] preload failed', idx, e.message); }
+}
 
 // Measure & cache chunk durations as they load
 audioEl.addEventListener('loadedmetadata', () => {
   if (state.chunkDurations[state.chunkIdx] === undefined) {
     state.chunkDurations[state.chunkIdx] = audioEl.duration || 0;
   }
-  // Update total duration display once we know more
   updateTotalDuration();
+  // Preload next chunk while current plays
+  preloadChunk(state.chunkIdx + 1);
 });
 
 audioEl.addEventListener('ended', () => {
-  // Advance to next chunk
   state.chunkIdx++;
-  if (state.chunkIdx < (state.currentAudio?.audio_urls?.length || 0)) {
-    audioEl.src = state.currentAudio.audio_urls[state.chunkIdx];
-    audioEl.playbackRate = state.playSpeed * (state.currentAudio.voice_rate || 1.0);
-    audioEl.volume = state.volume / 100;
-    audioEl.play().catch(e => console.warn('[audio] play failed:', e));
+  const total = state.currentAudio?.google_urls?.length || 0;
+  if (state.chunkIdx < total) {
+    // Use preloaded blob URL or fetch on demand
+    const playChunk = (blobUrl) => {
+      if (blobUrl) {
+        audioEl.src = blobUrl;
+        audioEl.playbackRate = state.playSpeed * (state.currentAudio.voice_rate || 1.0);
+        audioEl.volume = state.volume / 100;
+        audioEl.play().catch(e => console.warn('[audio] next chunk play failed:', e));
+      } else {
+        stopPlayback();
+        toast('⚠️ Часть аудио не загрузилась');
+      }
+    };
+    if (state.blobUrls[state.chunkIdx]) {
+      playChunk(state.blobUrls[state.chunkIdx]);
+    } else {
+      preloadChunk(state.chunkIdx).then(() => playChunk(state.blobUrls[state.chunkIdx]));
+    }
   } else {
-    // All chunks played
     if (state.loop) {
       state.chunkIdx = 0;
-      audioEl.src = state.currentAudio.audio_urls[0];
+      audioEl.src = state.blobUrls[0];
       audioEl.play().catch(e => console.warn('[audio] loop play failed:', e));
     } else {
       stopPlayback();
@@ -2853,7 +2921,6 @@ audioEl.addEventListener('ended', () => {
 
 audioEl.addEventListener('timeupdate', () => {
   if (!state.playing) return;
-  // Compute global progress across chunks
   const dur = getTotalDuration();
   const cur = getCurrentTime();
   state.progress = dur > 0 ? Math.min(1, cur / dur) : 0;
@@ -2863,12 +2930,17 @@ audioEl.addEventListener('timeupdate', () => {
 });
 
 audioEl.addEventListener('error', (e) => {
-  console.warn('[audio] error', e);
+  console.warn('[audio] error event', e);
   // Try to skip to next chunk on error
   state.chunkIdx++;
-  if (state.currentAudio && state.chunkIdx < state.currentAudio.audio_urls.length) {
-    audioEl.src = state.currentAudio.audio_urls[state.chunkIdx];
-    audioEl.play().catch(() => {});
+  const total = state.currentAudio?.google_urls?.length || 0;
+  if (state.chunkIdx < total) {
+    preloadChunk(state.chunkIdx).then(() => {
+      if (state.blobUrls[state.chunkIdx]) {
+        audioEl.src = state.blobUrls[state.chunkIdx];
+        audioEl.play().catch(() => {});
+      }
+    });
   } else {
     stopPlayback();
     toast('⚠️ Ошибка воспроизведения');
@@ -2903,13 +2975,35 @@ function togglePlay(force){
     ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>'
     : '<path d="M5 3l14 9-14 9V3Z"/>';
   if (state.playing) {
-    // If audio is at end (or chunkIdx out of range), restart from chunk 0
-    if (state.chunkIdx >= (state.currentAudio.audio_urls?.length || 0)) {
-      state.chunkIdx = 0;
+    const total = state.currentAudio.google_urls?.length || 0;
+    if (state.chunkIdx >= total) state.chunkIdx = 0;
+    const expectedUrl = state.blobUrls[state.chunkIdx];
+    if (!expectedUrl) {
+      toast('⏳ Загружаем аудио...');
+      // Wait for blob to load, then play
+      preloadChunk(state.chunkIdx).then(() => {
+        if (state.blobUrls[state.chunkIdx]) {
+          audioEl.src = state.blobUrls[state.chunkIdx];
+          audioEl.load();
+          audioEl.playbackRate = state.playSpeed * (state.currentAudio.voice_rate || 1.0);
+          audioEl.volume = state.volume / 100;
+          audioEl.play().catch(e => {
+            console.warn('[audio] play rejected after load:', e.message);
+            toast('🔊 Тапни Play вручную');
+            state.playing = false;
+            wave.classList.remove('playing');
+            playIco.innerHTML = '<path d="M5 3l14 9-14 9V3Z"/>';
+          });
+        } else {
+          toast('❌ Не удалось загрузить аудио');
+          state.playing = false;
+          wave.classList.remove('playing');
+          playIco.innerHTML = '<path d="M5 3l14 9-14 9V3Z"/>';
+        }
+      });
+      return;
     }
-    // Ensure src is set to the current chunk
-    const expectedUrl = state.currentAudio.audio_urls[state.chunkIdx];
-    if (!audioEl.src || audioEl.src !== expectedUrl || audioEl.ended) {
+    if (!audioEl.src || audioEl.ended) {
       audioEl.src = expectedUrl;
       audioEl.load();
     }
