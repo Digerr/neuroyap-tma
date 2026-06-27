@@ -587,8 +587,8 @@ if (tg) {
     if (tp.button_color) document.documentElement.style.setProperty('--tg-button', tp.button_color);
     if (tp.button_text_color) document.documentElement.style.setProperty('--tg-button-text', tp.button_text_color);
   }
-  // Vertical swipes enabled for content scroll
-  if (tg.enableVerticalSwipes) tg.enableVerticalSwipes();
+  // Vertical swipes enabled for content scroll (guarded — older TG clients crash)
+  try { if (tg.enableVerticalSwipes) tg.enableVerticalSwipes(); } catch(e) {}
 }
 
 /* Haptic helper */
@@ -2264,8 +2264,14 @@ const HIST_SEED = [
   { v: null, text:'Привет, человек. Я нейросеть...', time:'вчера', dur:15 },
 ];
 
-/* ===== TTS ENGINE — REAL AUDIO via Google Translate TTS =====
+/* ===== TTS ENGINE — REAL AUDIO via Google Translate TTS + allorigins CORS proxy =====
  * Free, no API key, works in browser via <audio> tag.
+ *
+ * Direct Google TTS endpoint blocks CORS for audio playback, so we route
+ * through the free allorigins.win proxy which adds Access-Control-Allow-Origin.
+ *
+ *   allorigins URL = https://api.allorigins.win/raw?url=<URL-encoded Google TTS URL>
+ *
  * Google TTS endpoint: https://translate.google.com/translate_tts
  *   - Supports ~200 chars per request → we chunk longer text
  *   - 1 voice per language (tl=ru → Tatyana, tl=en → English, etc.)
@@ -2280,20 +2286,19 @@ const TTS_ENGINE = {
   name: 'GTTTS',
   isMock: false,
   backends: ['gtts', 'elevenlabs', 'silero', 'minimax'],
-  endpoint: 'https://translate.google.com/translate_tts',
+  ttsEndpoint: 'https://translate.google.com/translate_tts',
+  proxyEndpoint: 'https://api.allorigins.win/raw?url=',
   chunkSize: 190,  // max chars per request (Google limit ~200)
 
   // Split text into TTS-friendly chunks (prefer sentence boundaries)
   chunkText(text) {
     if (text.length <= this.chunkSize) return [text];
     const chunks = [];
-    // Split by sentence enders, then group into chunks <= chunkSize
     const sentences = text.match(/[^.!?]+[.!?]*\s*/g) || [text];
     let current = '';
     for (const s of sentences) {
       if ((current + s).length > this.chunkSize) {
         if (current) chunks.push(current.trim());
-        // If a single sentence is too long, hard-split it
         if (s.length > this.chunkSize) {
           for (let i = 0; i < s.length; i += this.chunkSize) {
             chunks.push(s.slice(i, i + this.chunkSize).trim());
@@ -2310,7 +2315,7 @@ const TTS_ENGINE = {
     return chunks;
   },
 
-  // Build a Google TTS URL for a single chunk
+  // Build a proxied Google TTS URL for a single chunk
   buildUrl(text, lang) {
     const params = new URLSearchParams({
       ie: 'UTF-8',
@@ -2318,7 +2323,8 @@ const TTS_ENGINE = {
       tl: lang,
       client: 'tw-ob',
     });
-    return `${this.endpoint}?${params.toString()}`;
+    const googleUrl = `${this.ttsEndpoint}?${params.toString()}`;
+    return this.proxyEndpoint + encodeURIComponent(googleUrl);
   },
 
   async generate(text, voice, opts = {}) {
@@ -2326,19 +2332,18 @@ const TTS_ENGINE = {
     const chunks = this.chunkText(text);
     const speed = opts.speed || 1.0;
 
-    // Build audio URLs for each chunk
+    // Build proxied audio URLs for each chunk
     const urls = chunks.map(c => this.buildUrl(c, lang));
 
     // Preload first chunk to measure real duration via HTMLAudioElement
     const probe = new Audio();
-    probe.crossOrigin = 'anonymous';
     probe.preload = 'metadata';
     probe.src = urls[0];
 
     let probedDuration = 0;
     try {
-      await new Promise((resolve, reject) => {
-        const timer = setTimeout(resolve, 3000);  // don't block forever
+      await new Promise((resolve) => {
+        const timer = setTimeout(resolve, 4000);  // don't block forever
         probe.addEventListener('loadedmetadata', () => {
           clearTimeout(timer);
           probedDuration = probe.duration;
@@ -2357,7 +2362,7 @@ const TTS_ENGINE = {
                + text.slice(0,20).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
 
     return {
-      audio_urls: urls,           // array of URLs to play in sequence
+      audio_urls: urls,           // array of proxied URLs to play in sequence
       duration,
       engine: this.name,
       mock: false,
