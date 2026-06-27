@@ -2755,12 +2755,16 @@ genBtn.onclick = async () => {
 
   waveSeed = audio.seed;
 
-  // Reset playback state
-  stopPlayback();
-  audioEl.src = '';
+  // Reset playback state (without setting audioEl.src='' which triggers error event)
+  state.playing = false;
+  audioEl.pause();
+  audioEl.currentTime = 0;
   state.currentAudio = audio;
   state.chunkIdx = 0;
   state.chunkDurations = new Array(audio.audio_urls.length).fill(undefined);
+  wave.classList.remove('playing');
+  playIco.innerHTML = '<path d="M5 3l14 9-14 9V3Z"/>';
+  state.progress = 0;
 
   $('rAv').textContent = v.initials;
   $('rAv').style.background = `linear-gradient(135deg, ${v.color}, ${shade(v.color,-25)})`;
@@ -2780,8 +2784,11 @@ genBtn.onclick = async () => {
 
   result.classList.add('show');
 
-  // Preload first chunk so playback starts instantly on tap
+  // Preload first chunk so playback starts instantly on tap.
+  // Use audioEl.src directly — Google TTS returns CORP: cross-origin,
+  // which allows HTMLAudioElement to load and play the MP3 cross-origin.
   audioEl.src = audio.audio_urls[0];
+  audioEl.load();  // explicitly trigger reload after src change
 
   HIST_SEED.unshift({
     v, text: text.length>40 ? text.slice(0,40)+'…' : text,
@@ -2896,18 +2903,23 @@ function togglePlay(force){
     ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>'
     : '<path d="M5 3l14 9-14 9V3Z"/>';
   if (state.playing) {
-    // If audio is at end, restart from beginning
+    // If audio is at end (or chunkIdx out of range), restart from chunk 0
     if (state.chunkIdx >= (state.currentAudio.audio_urls?.length || 0)) {
       state.chunkIdx = 0;
     }
-    if (!audioEl.src || audioEl.ended) {
-      audioEl.src = state.currentAudio.audio_urls[state.chunkIdx];
+    // Ensure src is set to the current chunk
+    const expectedUrl = state.currentAudio.audio_urls[state.chunkIdx];
+    if (!audioEl.src || audioEl.src !== expectedUrl || audioEl.ended) {
+      audioEl.src = expectedUrl;
+      audioEl.load();
     }
     audioEl.playbackRate = state.playSpeed * (state.currentAudio.voice_rate || 1.0);
     audioEl.volume = state.volume / 100;
-    audioEl.play().catch(e => {
-      console.warn('[audio] play rejected:', e);
-      toast('🔊 Тапни ещё раз — браузер требует жест');
+    audioEl.play().then(() => {
+      console.log('[audio] playing OK');
+    }).catch(e => {
+      console.warn('[audio] play rejected:', e.name, e.message);
+      toast('🔊 Тапни Play вручную — браузер требует жест');
       state.playing = false;
       wave.classList.remove('playing');
       playIco.innerHTML = '<path d="M5 3l14 9-14 9V3Z"/>';
@@ -2919,8 +2931,8 @@ function togglePlay(force){
 
 function stopPlayback() {
   state.playing = false;
-  audioEl.pause();
-  audioEl.currentTime = 0;
+  try { audioEl.pause(); } catch(e) {}
+  try { audioEl.currentTime = 0; } catch(e) {}
   state.chunkIdx = 0;
   state.chunkDurations = [];
   wave.classList.remove('playing');
